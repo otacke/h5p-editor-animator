@@ -1,0 +1,114 @@
+.h5p-editor-animator-board {
+  position: relative;
+
+  .h5p-editor-animator-toolbar-main {
+    .h5p-editor-animator-toolbar-action {
+      flex-grow: 1;
+      justify-content: flex-end;
+
+      .toolbar-button {
+        &::before {
+          font-family: "H5PFontAwesome4", sans-serif;
+          font-size: 1.15rem;
+          font-weight: bold;
+          height: 1.15rem;
+          left: 50%;
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          width: 1.15rem;
+        }
+
+        &.toolbar-button-zoom-in::before {
+          content: "\f00e";
+          font-weight: normal;
+        }
+
+        &.toolbar-button-zoom-out::before {
+          content: "\f010";
+          font-weight: normal;
+        }
+
+        &.toolbar-button-preview::before {
+          content: "\f26c";
+        }
+      }
+    }
+
+    .h5peditor-dragnbar {
+      .h5p-dragnbar-ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        .h5p-dragnbar-li {
+          background: transparent;
+          border: none;
+          float: left;
+          margin: 0;
+          padding: 0;
+          position: relative;
+
+          .h5p-dragnbar-a {
+            background-color: rgba(26,115,217,.05);
+            border: 2px solid #fff;
+            border-radius: 3px;
+            box-sizing: border-box;
+            color: var(--color-toolbar-button);
+            display: block;
+            padding: 0;
+            position: relative;
+            outline: revert;
+            text-align: center;
+            width: var(--toolbar-button-size);
+            height: var(--toolbar-button-size);
+
+            &:hover {
+              background-color: rgba(26,115,217,.1);
+            }
+
+            &:active {
+              background-color: rgba(26,115,217,.1);
+            }
+
+            &:focus {
+              z-index: 1;
+            }
+
+            &::before {
+              font-family: "H5PFontAwesome4", sans-serif;
+              font-size: 1.15rem;
+              font-weight: bold;
+              height: 1.15rem;
+              left: 50%;
+              position: absolute;
+              top: 50%;
+              transform: translate(-50%, -50%);
+              width: 1.15rem;
+            }
+
+            &.h5p-dragnbar-image-button::before {
+              content: "\f03e";
+            }
+
+            &.h5p-dragnbar-shapes-button::before {
+              content: "\f096";
+            }
+
+            &.h5p-dragnbar-text-button::before {
+              content: "\f031";
+            }
+
+            &.h5p-dragnbar-video-button::before {
+              content: "\f008";
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .h5p-dragnbar-context-menu {
+    width: max-content; // Required for zooming to work properly
+  }
+}

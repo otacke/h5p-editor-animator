@@ -1,0 +1,47 @@
+  .h5p-editor-animator-element {
+    cursor: move;
+    position: absolute;
+    z-index: 1; /* Required to make DnB corners be in the right spot */
+
+    &.h5p-moving {
+      opacity: 1;
+    }
+
+    .h5p-editor-animator-element-instance-wrapper {
+      box-sizing: border-box;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+
+      .h5p-editor-animator-element-instance {
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+
+        &.h5p-advanced-text {
+          p {
+            padding: 0;
+            margin: 0 0 1em;
+          }
+
+          p:last-child {
+            margin-bottom: 0;
+          }
+        }
+
+        &.h5p-image:has(.h5p-placeholder) {
+          height: 100%;
+        }
+      }
+
+      .h5p-editor-animator-element-click-blocker {
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    }
+  }

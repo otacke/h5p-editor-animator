@@ -1,0 +1,25 @@
+.h5p-editor-animator-element-area-wrapper-inner {
+  box-sizing: border-box;
+  max-height: var(--maxHeight);
+  position: relative;
+  overflow: hidden;
+
+  .h5p-editor-animator-element-area {
+    aspect-ratio: var(--aspectRatio);
+    background-color: var(--backgroundColor, #ffffff);
+    background-image: var(--backgroundImageURL);
+    background-size: cover;
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    width: var(--zoom);
+  }
+
+  &.overflow-scroll {
+    overflow: scroll;
+  }
+
+  &.display-none {
+    display: none;
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "libraryStrings": {
+    "l10n.toolbarButton-text": "Text",
+    "l10n.toolbarButton-image": "Image",
+    "l10n.toolbarButton-video": "Video",
+    "l10n.toolbarButton-shapes": "Shapes",
+    "l10n.done": "Done",
+    "l10n.remove": "Remove",
+    "l10n.contentRequired": "You need to select a content type for this element.",
+    "l10n.confirmationDialogRemoveHeader": "Delete element",
+    "l10n.confirmationDialogRemoveDialog": "Do you really want to delete this element?",
+    "l10n.confirmationDialogRemoveCancel": "No",
+    "l10n.confirmationDialogRemoveConfirm": "Yes, delete!",
+    "l10n.toolbarButtonZoomIn": "Zoom in",
+    "l10n.toolbarButtonZoomOut": "Zoom out",
+    "l10n.toolbarButtonPreview": "Preview",
+    "a11y.toolbarLabelContents": "Contents",
+    "a11y.toolbarLabelActions": "Actions"
+  }
+}
