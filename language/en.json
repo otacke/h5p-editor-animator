@@ -14,6 +14,8 @@
     "l10n.toolbarButtonZoomIn": "Zoom in",
     "l10n.toolbarButtonZoomOut": "Zoom out",
     "l10n.toolbarButtonPreview": "Preview",
+    "l10n.elements": "Elements",
+    "l10n.animations": "Animations",
     "a11y.toolbarLabelContents": "Contents",
     "a11y.toolbarLabelActions": "Actions"
   }

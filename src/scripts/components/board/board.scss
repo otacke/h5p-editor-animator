@@ -7,6 +7,11 @@
       justify-content: flex-end;
 
       .toolbar-button {
+
+        &.toolbar-button-active {
+          color: #fff;
+        }
+
         &::before {
           font-family: "H5PFontAwesome4", sans-serif;
           font-size: 1.15rem;
@@ -17,6 +22,11 @@
           top: 50%;
           transform: translate(-50%, -50%);
           width: 1.15rem;
+        }
+
+        &.toolbar-button-list-view::before {
+          content: "\f03a";
+          font-weight: normal;
         }
 
         &.toolbar-button-zoom-in::before {
@@ -106,6 +116,16 @@
         }
       }
     }
+  }
+
+  .h5p-editor-animator-board-main-area {
+    display: grid;
+    grid-template-columns: 1fr 28ch; // Might change
+    column-gap: 0.5rem;
+  }
+
+  .h5p-editor-animator-board-main-area:has(.h5p-editor-animator-sidebar.display-none) {
+    grid-template-columns: 1fr;
   }
 
   .h5p-dragnbar-context-menu {

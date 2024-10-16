@@ -7,6 +7,10 @@
       opacity: 1;
     }
 
+    &.highlighted {
+      outline: 2px dashed var(--color-primary);
+    }
+
     .h5p-editor-animator-element-instance-wrapper {
       box-sizing: border-box;
       height: 100%;

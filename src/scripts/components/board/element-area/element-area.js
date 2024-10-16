@@ -114,6 +114,22 @@ export default class ElementArea {
   }
 
   /**
+   * Bring element to front.
+   * @param {number} index Index of element to bring to front.
+   */
+  bringToFront(index) {
+    this.elementArea.append(this.elementArea.children[index]);
+  }
+
+  /**
+   * Send element to back.
+   * @param {number} index Index of element to send to back.
+   */
+  sendToBack(index) {
+    this.elementArea.prepend(this.elementArea.children[index]);
+  }
+
+  /**
    * Append to DOM.
    * @param {HTMLElement} dom DOM element.
    */
@@ -121,12 +137,11 @@ export default class ElementArea {
     this.elementArea.append(dom);
   }
 
-  /**
-   * Prepend to DOM.
-   * @param {HTMLElement} dom DOM element.
-   */
-  prependElement(dom) {
-    this.elementArea.prepend(dom);
+  swapElements(index1, index2) {
+    const dom1 = this.elementArea.children[index1];
+    const dom2 = this.elementArea.children[index2];
+
+    Util.swapDOMElements(dom1, dom2);
   }
 
   /**

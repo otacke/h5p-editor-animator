@@ -6,14 +6,17 @@ import { ZOOM_LEVEL_MAX } from './element-area/element-area.js';
 import Element from './element-area/element.js';
 import ToolbarMain from './toolbar/toolbar-main.js';
 import ToolbarGroup from './toolbar/toolbar-group.js';
+import Sidebar from './sidebar/sidebar.js';
+import ListElements from './sidebar/list-elements.js';
+import ListAnimations from './sidebar/list-animations.js';
 
 import './board.scss';
 
 /** @constant {string} KEY_SHORTCUTS_ZOOM_IN Key shortcut for zooming in. */
-const KEY_SHORTCUTS_ZOOM_IN = '+';
+export const KEY_SHORTCUTS_ZOOM_IN = '+';
 
 /** @constant {string} KEY_SHORTCUTS_ZOOM_OUT Key shortcut for zooming out. */
-const KEY_SHORTCUTS_ZOOM_OUT = '-';
+export const KEY_SHORTCUTS_ZOOM_OUT = '-';
 
 export default class Board {
 
@@ -103,6 +106,18 @@ export default class Board {
 
     const toolbarButtons = [
       {
+        id: 'list-view',
+        tooltip: this.params.dictionary.get('l10n.toolbarButtonListView'),
+        type: 'toggle',
+        a11y: {
+          active: this.params.dictionary.get('a11y.buttonListViewInActive'),
+          inactive: this.params.dictionary.get('a11y.buttonListviewInInactive'),
+        },
+        onClick: () => {
+          this.toggleSidebar();
+        }
+      },
+      {
         id: 'zoom-in',
         tooltip: this.params.dictionary.get('l10n.toolbarButtonZoomIn'),
         type: 'pulse',
@@ -156,19 +171,11 @@ export default class Board {
         actionButtonsDOM: this.actionButtons.getDOM()
       },
       {
-
       }
     );
-
     this.dom.append(this.toolbar.getDOM());
-    this.dom.append(this.elementArea.getDOM());
-    this.dom.appendChild(this.dialog.getDOM());
 
-    this.params.elements.forEach((elementParams) => {
-      this.createElement(elementParams);
-    });
-
-    this.dom.addEventListener('keydown', (event) => {
+    window.addEventListener('keydown', (event) => {
       if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
         return;
       }
@@ -180,6 +187,43 @@ export default class Board {
         this.elementArea.zoomOut();
       }
     });
+
+    const mainArea = document.createElement('div');
+    mainArea.classList.add('h5p-editor-animator-board-main-area');
+    mainArea.append(this.elementArea.getDOM());
+    this.dom.append(mainArea);
+
+    // TODO ...
+    this.listElements = new ListElements(
+      {
+        title: this.params.dictionary.get('l10n.elements'),
+      },
+      {
+        toggleHighlightElement: (subContentId, state) => {
+          this.toggleHighlightElement(subContentId, state);
+        },
+        changeElementZPosition: (sourceIndex, moveOffset) => {
+          return this.changeElementZPosition(sourceIndex, moveOffset);
+        }
+      }
+    );
+
+    this.listAnimations = new ListAnimations({
+      title: this.params.dictionary.get('l10n.animations'),
+    });
+
+    this.sidebar = new Sidebar({
+      subComponents: [this.listElements, this.listAnimations]
+    }, {});
+    mainArea.append(this.sidebar.getDOM());
+
+    this.dom.appendChild(this.dialog.getDOM());
+
+    this.params.elements.forEach((elementParams) => {
+      this.createElement(elementParams);
+    });
+
+    this.toggleSidebar(false);
 
     window.requestAnimationFrame(() => {
       this.dnb.setContainerEm(parseFloat(window.getComputedStyle(this.elementArea.getDOM()).fontSize));
@@ -198,15 +242,24 @@ export default class Board {
    * Resize board.
    */
   resize() {
-    if (this.elementAreaHeightPinned) {
-      return;
-    }
-
-    this.elementAreaHeightPinned = true;
-
-    window.requestAnimationFrame(() => {
+    window.clearTimeout(this.pinWrapperTimeout);
+    this.pinWrapperTimeout = window.requestAnimationFrame(() => {
       this.elementArea.pinWrapperHeight();
     });
+  }
+
+  toggleSidebar(state) {
+    this.isListViewActive = state ?? !this.isListViewActive;
+
+    if (this.isListViewActive) {
+      this.sidebar.show();
+    }
+    else {
+      this.sidebar.hide();
+    }
+
+    this.resize();
+    this.params.globals.get('resize')();
   }
 
   /**
@@ -252,6 +305,8 @@ export default class Board {
    */
   setAspectRatio(aspectRatio) {
     this.elementArea.setAspectRatio(aspectRatio);
+    this.resize();
+    this.params.globals.get('resize')();
   }
 
   /**
@@ -284,10 +339,12 @@ export default class Board {
    * @returns {H5P.jQuery} DOM element. JQuery, because of DragNBar.
    */
   createElement(params = {}) {
+    const index = this.elements.length;
+
     const element = new Element(
       {
         globals: this.params.globals,
-        index: this.elements.length,
+        index: index,
         elementParams: params,
         elementFields: this.params.elementsFields,
         dnb: this.dnb
@@ -317,12 +374,31 @@ export default class Board {
           const top = elementRect.top - elementAreaRect.top + 2 * this.elementArea.getDOM().scrollTop;
 
           return { left: left, top: top };
+        },
+        onFocus: (element) => {
+          this.toggleHighlightElement(element.getSubContentId(), true);
+        },
+        onBlur: (element) => {
+          this.toggleHighlightElement(element.getSubContentId(), false);
         }
       }
     );
 
+    // TODO: Rename this.elements to something better
+    // Important: The order of these must not be changed
     this.elements.push(element);
     this.elementArea.appendElement(element.getDOM());
+
+    const elementParams = this.params.elements[index];
+
+    const contentTypeName = elementParams.contentType.library.split(' ')[0].split('.').pop();
+    const title = elementParams.contentType.metadata.title;
+
+    this.listElements.add({
+      title: title,
+      details: contentTypeName,
+      subContentId: elementParams.contentType.subContentId
+    });
 
     return element.getData().$element;
   }
@@ -401,17 +477,26 @@ export default class Board {
    * @param {Element} element Element to be removed.
    */
   remove(element) {
+    const subContentId = element.getSubContentId();
+
+    this.listElements.remove(subContentId);
+
     const removeIndex = element.getIndex();
 
     // Remove element
     element.remove();
     this.elements.splice(removeIndex, 1);
-    this.params.elements.splice(removeIndex, 1);
+
+    this.params.elements = this.params.elements.filter((paramsElement) => {
+      return paramsElement.contentType.subContentId !== subContentId;
+    });
 
     // Re-index elements
     this.elements.forEach((element, elementIndex) => {
       element.setIndex(elementIndex);
     });
+
+    this.dnb.blurAll();
 
     this.callbacks.onChanged({ elements: this.params.elements });
   }
@@ -421,7 +506,13 @@ export default class Board {
    * @param {Element} element Map element to be brought to front.
    */
   bringToFront(element) {
-    this.elementArea.appendElement(element.getDOM());
+    const elementIndex = this.elements.indexOf(element);
+    this.params.elements.push(this.params.elements.splice(elementIndex, 1)[0]);
+
+    this.elementArea.bringToFront(elementIndex);
+    this.listElements.bringToFront(elementIndex);
+
+    this.callbacks.onChanged({ elements: this.params.elements });
   }
 
   /**
@@ -429,7 +520,13 @@ export default class Board {
    * @param {Element} element Element to be sent to back.
    */
   sendToBack(element) {
-    this.elementArea.prependElement(element.getDOM());
+    const elementIndex = this.elements.indexOf(element);
+    this.params.elements.unshift(this.params.elements.splice(elementIndex, 1)[0]);
+
+    this.elementArea.sendToBack(elementIndex);
+    this.listElements.sendToBack(elementIndex);
+
+    this.callbacks.onChanged({ elements: this.params.elements });
   }
 
   /**
@@ -439,6 +536,7 @@ export default class Board {
   edit(element) {
     this.toolbar.hide();
     this.elementArea.hide();
+    this.sidebar.hide();
 
     this.dialog.showForm({
       form: element.getData().form,
@@ -449,8 +547,17 @@ export default class Board {
         if (isValid) {
           this.toolbar.show();
           this.elementArea.show();
+          if (this.isListViewActive) {
+            this.sidebar.show();
+          }
 
-          element.updateParams(this.params.elements[element.getIndex()]);
+          const elementParams = this.params.elements[element.getIndex()];
+          element.updateParams(elementParams);
+
+          this.listElements.update(
+            element.getSubContentId(),
+            { title: elementParams.contentType.metadata.title }
+          );
         }
 
         return isValid;
@@ -458,6 +565,9 @@ export default class Board {
       removeCallback: () => {
         this.toolbar.show();
         this.elementArea.show();
+        if (this.isListViewActive) {
+          this.sidebar.show();
+        }
         this.removeIfConfirmed(element);
       }
     });
@@ -496,5 +606,41 @@ export default class Board {
 
       return child.validate() ?? true; // Some widgets return `undefined` instead of true
     });
+  }
+
+  toggleHighlightElement(subContentId, state) {
+    const element = this.elements.find((element) => element.getSubContentId() === subContentId);
+    if (!element) {
+      return;
+    }
+
+    element.toggleHighlight(state);
+    this.listElements.toggleHighlightElement(subContentId, state);
+  }
+
+  handleDocumentMouseDown(event) {
+    this.listElements.handleDocumentMouseDown(event);
+  }
+
+  /**
+   * Change elements' z-position.
+   * @param {number} indexSource Index of source element.
+   * @param {number} indexTarget Index of target element.
+   */
+  changeElementZPosition(indexSource, indexTarget) {
+    if (
+      typeof indexSource !== 'number' || indexSource < 0 || indexSource > this.params.elements.length - 1 ||
+      typeof indexTarget !== 'number' || indexTarget < 0 || indexTarget > this.params.elements.length - 1
+    ) {
+      return;
+    }
+
+    this.elementArea.swapElements(indexSource, indexTarget);
+    this.listElements.swapElements(indexSource, indexTarget);
+
+    [this.params.elements[indexSource], this.params.elements[indexTarget]] =
+      [this.params.elements[indexTarget], this.params.elements[indexSource]];
+
+    this.callbacks.onChanged({ elements: this.params.elements });
   }
 }

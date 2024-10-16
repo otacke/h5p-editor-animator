@@ -44,7 +44,9 @@ export default class Element {
       onBroughtToFront: () => {},
       onSentToBack: () => {},
       onChanged: () => {},
-      getPosition: () => {}
+      getPosition: () => {},
+      onFocus: () => {},
+      onBlur: () => {}
     }, callbacks);
 
     this.buildDOM();
@@ -171,6 +173,14 @@ export default class Element {
   }
 
   /**
+   * Get sub content ID.
+   * @returns {number} Sub content ID.
+   */
+  getSubContentId() {
+    return this.params.elementParams.contentType.subContentId;
+  }
+
+  /**
    * Set index.
    * @param {number} index Index of map element.
    */
@@ -185,6 +195,14 @@ export default class Element {
    */
   getIndex() {
     return this.params.index;
+  }
+
+  /**
+   * Set highlight.
+   * @param {boolean} state State of highlight.
+   */
+  toggleHighlight(state) {
+    this.dom.classList.toggle('highlighted', state);
   }
 
   /**
@@ -285,6 +303,14 @@ export default class Element {
     };
 
     this.dnbElement = this.params.dnb.add($element, '', options);
+
+    this.dnbElement.$element.get(0).addEventListener('focus', (event) => {
+      this.callbacks.onFocus(this);
+    });
+
+    this.dnbElement.$element.get(0).addEventListener('blur', (event) => {
+      this.callbacks.onBlur(this);
+    });
 
     this.dnbElement.contextMenu.on('contextMenuEdit', () => {
       this.callbacks.onEdited(this);

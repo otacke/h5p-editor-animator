@@ -39,6 +39,9 @@ export default class Animator extends H5P.EventDispatcher {
     this.globals.set('getElementAreaSize', () => {
       return this.board.getElementAreaSize();
     });
+    this.globals.set('resize', () => {
+      this.trigger('resize');
+    });
 
     // Callbacks to call when parameters change
     this.changes = [];
@@ -56,6 +59,10 @@ export default class Animator extends H5P.EventDispatcher {
     this.$container = H5P.jQuery(this.dom); // TODO: Replace once H5P Group removes jQuery from H5P core
 
     this.buildBoard();
+
+    document.addEventListener('mousedown', (event) => {
+      this.board?.handleDocumentMouseDown(event);
+    });
 
     window.addEventListener('resize', () => {
       this.board?.resize();

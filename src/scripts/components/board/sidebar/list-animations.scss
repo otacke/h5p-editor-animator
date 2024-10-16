@@ -1,0 +1,10 @@
+.h5p-editor-animator-sidebar-list-animations {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 0.25rem;
+  padding: 0.25rem;
+
+  &.display-none {
+    display: none;
+  }
+}
