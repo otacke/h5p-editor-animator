@@ -1,0 +1,83 @@
+.submenu-popup {
+  color: black; /* TODO */
+  background-color: #fff; /* TODO */
+  border: 1px solid rgba(0, 0, 0, 0.15); /* TODO */
+  border-radius: 4px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* TODO */
+  box-sizing: border-box;
+  font-size: 0.75rem;
+  position: absolute;
+  z-index: 2; // Needs to be larger than z-index of placeholder
+
+  &.display-none {
+    display: none;
+  }
+
+  .submenu-popup-title {
+    background-color: rgba(23, 104, 196, 0.1); /* TODO */
+    border-bottom: solid 0.042rem #F1F3F6; /* TODO */
+    font-weight: bold;
+    line-height: 0.708rem;
+    overflow: hidden;
+    padding: 0.5rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .submenu-popup-options {
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem;
+
+    .submenu-popup-option {
+      background: transparent;
+      border: 0;
+      color: #363b42; /* TODO */
+      cursor: pointer;
+      line-height: 0.708rem;
+      overflow: hidden;
+      padding: 0.5rem;
+      text-align: left;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+
+      &.display-none {
+        display: none;
+      }
+
+      &::before {
+        font-family: "Material Icons", system-ui, -apple-system, sans-serif;
+        margin-right: 0.3em;
+        line-height: 1;
+        vertical-align: bottom;
+      }
+
+      &.submenu-popup-option-edit::before {
+        content: "\e3c9";
+      }
+
+      &.submenu-popup-option-move-up::before {
+        content: "\e5d8";
+      }
+
+      &.submenu-popup-option-move-down::before {
+        content: "\e5db";
+      }
+
+      &.submenu-popup-option-remove::before {
+        content: "\e872"; /* TODO */
+      }
+    }
+
+    .submenu-popup-option:hover {
+      background-color: rgba(23, 104, 196, 0.1); /* TODO */
+    }
+  }
+
+  &.keyboard {
+    .submenu-popup-option:focus {
+      background-color: rgba(23, 104, 196, 0.1); /* TODO */
+    }
+  }
+}

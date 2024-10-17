@@ -196,19 +196,27 @@ export default class Board {
     // TODO ...
     this.listElements = new ListElements(
       {
+        dictionary: this.params.dictionary,
         title: this.params.dictionary.get('l10n.elements'),
       },
       {
         toggleHighlightElement: (subContentId, state) => {
           this.toggleHighlightElement(subContentId, state);
         },
-        changeElementZPosition: (sourceIndex, moveOffset) => {
-          return this.changeElementZPosition(sourceIndex, moveOffset);
+        changeElementZPosition: (sourceIndex, moveOffset, active) => {
+          return this.changeElementZPosition(sourceIndex, moveOffset, active);
+        },
+        edit: (subContentId) => {
+          this.edit(this.elements.find((element) => element.getSubContentId() === subContentId));
+        },
+        remove: (subContentId) => {
+          this.removeIfConfirmed(this.elements.find((element) => element.getSubContentId() === subContentId));
         }
       }
     );
 
     this.listAnimations = new ListAnimations({
+      dictionary: this.params.dictionary,
       title: this.params.dictionary.get('l10n.animations'),
     });
 
@@ -374,12 +382,6 @@ export default class Board {
           const top = elementRect.top - elementAreaRect.top + 2 * this.elementArea.getDOM().scrollTop;
 
           return { left: left, top: top };
-        },
-        onFocus: (element) => {
-          this.toggleHighlightElement(element.getSubContentId(), true);
-        },
-        onBlur: (element) => {
-          this.toggleHighlightElement(element.getSubContentId(), false);
         }
       }
     );
@@ -608,6 +610,11 @@ export default class Board {
     });
   }
 
+  /**
+   * Toggle highlight of element.
+   * @param {string} subContentId Subcontent ID.
+   * @param {boolean} state True to highlight, false to remove highlight.
+   */
   toggleHighlightElement(subContentId, state) {
     const element = this.elements.find((element) => element.getSubContentId() === subContentId);
     if (!element) {
@@ -618,6 +625,10 @@ export default class Board {
     this.listElements.toggleHighlightElement(subContentId, state);
   }
 
+  /**
+   * Handle document mouse down.
+   * @param {MouseEvent} event Mouse event.
+   */
   handleDocumentMouseDown(event) {
     this.listElements.handleDocumentMouseDown(event);
   }
@@ -626,8 +637,9 @@ export default class Board {
    * Change elements' z-position.
    * @param {number} indexSource Index of source element.
    * @param {number} indexTarget Index of target element.
+   * @param {boolean} [active] If true, active element.
    */
-  changeElementZPosition(indexSource, indexTarget) {
+  changeElementZPosition(indexSource, indexTarget, active = true) {
     if (
       typeof indexSource !== 'number' || indexSource < 0 || indexSource > this.params.elements.length - 1 ||
       typeof indexTarget !== 'number' || indexTarget < 0 || indexTarget > this.params.elements.length - 1
@@ -636,7 +648,7 @@ export default class Board {
     }
 
     this.elementArea.swapElements(indexSource, indexTarget);
-    this.listElements.swapElements(indexSource, indexTarget);
+    this.listElements.swapElements(indexSource, indexTarget, !active);
 
     [this.params.elements[indexSource], this.params.elements[indexTarget]] =
       [this.params.elements[indexTarget], this.params.elements[indexSource]];

@@ -1,5 +1,6 @@
 import Util from '@services/util.js';
 import DraggableElement from './draggable-element/draggable-element.js';
+import SubMenu from './submenu.js';
 
 import './list-elements.scss';
 
@@ -16,7 +17,10 @@ export default class ListElements {
     this.params = Util.extend({}, params);
     this.callbacks = Util.extend({
       toggleHighlightElement: () => {},
-      changeElementZPosition: () => {}
+      changeElementZPosition: () => {},
+      edit: () => {},
+      move: () => {},
+      remove: () => {}
     }, callbacks);
 
     this.draggableElements = [];
@@ -25,6 +29,50 @@ export default class ListElements {
 
     this.dom = document.createElement('div');
     this.dom.classList.add('h5p-editor-animator-sidebar-list-elements');
+
+    // Submenu
+    this.subMenu = new SubMenu(
+      {
+        dictionary: this.params.dictionary,
+        options: [
+          {
+            id: 'edit',
+            label: this.params.dictionary.get('l10n.edit'),
+            onClick: ((draggableElement) => {
+              this.callbacks.edit(draggableElement.getSubContentId());
+            }),
+            keepFocus: true
+          },
+          {
+            id: 'move-up',
+            label: this.params.dictionary.get('l10n.moveUp'),
+            onClick: ((draggableElement) => {
+              const index = this.getElementIndex(draggableElement);
+              this.callbacks.changeElementZPosition(index, index + 1, false);
+            }),
+            keepFocus: true
+          },
+          {
+            id: 'move-down',
+            label: this.params.dictionary.get('l10n.moveDown'),
+            onClick: ((draggableElement) => {
+              const index = this.getElementIndex(draggableElement);
+              this.callbacks.changeElementZPosition(index, index - 1, false);
+            }),
+            keepFocus: true
+          },
+          {
+            id: 'remove',
+            label: this.params.dictionary.get('l10n.remove'),
+            onClick: ((draggableElement) => {
+              this.callbacks.remove(draggableElement.getSubContentId(), -1);
+            }),
+            keepFocus: true
+          }
+        ]
+      }
+    );
+    this.dom.appendChild(this.subMenu.getDOM());
   }
 
   /**
@@ -59,7 +107,9 @@ export default class ListElements {
 
   add(params = {}) {
     const draggableElement = new DraggableElement(
-      {},
+      {
+        dictionary: this.params.dictionary,
+      },
       {
         onMouseDown: (subContentId, state) => {
           this.callbacks.toggleHighlightElement(subContentId, state);
@@ -75,6 +125,9 @@ export default class ListElements {
         },
         onDragEnd: (element) => {
           this.handleDragEnd(element);
+        },
+        toggleSubMenu: (element, state, wasKeyboardUsed) => {
+          this.toggleSubMenu(element, state, wasKeyboardUsed);
         }
       }
     );
@@ -142,6 +195,20 @@ export default class ListElements {
     this.draggableElements.forEach((draggableElement) => {
       draggableElement.handleDocumentMouseDown(event);
     });
+
+    if (!this.subMenu.isOpen) {
+      return;
+    }
+
+    const targetIsSubMenu = this.subMenu.owns(event.target);
+    const targetIsDraggableElement =
+      this.draggableElements.some((draggableElement) => draggableElement.owns(event.target));
+
+    if (targetIsSubMenu || targetIsDraggableElement) {
+      return;
+    }
+
+    this.subMenu.hide();
   }
 
   /**
@@ -219,8 +286,9 @@ export default class ListElements {
    * Swap elements.
    * @param {number} index1 Index 1.
    * @param {number} index2 Index 2.
+   * @param {boolean} [ignorePlaceholder] True to ignore placeholder, false otherwise.
    */
-  swapElements(index1, index2) {
+  swapElements(index1, index2, ignorePlaceholder = false) {
     const element1 = this.draggableElements[index1];
     const element2 = this.draggableElements[index2];
 
@@ -230,6 +298,33 @@ export default class ListElements {
     [this.draggableElements[index1], this.draggableElements[index2]] =
       [this.draggableElements[index2], this.draggableElements[index1]];
 
-    element1.attachDragPlaceholder();
+    if (!ignorePlaceholder) {
+      element1.attachDragPlaceholder();
+    }
+  }
+
+  /**
+   * Handle show menu.
+   * @param {DraggableElement} element Element.
+   * @param {boolean} state True to show, false to hide.
+   * @param {boolean} wasKeyboardUsed True if keyboard was used to toggle menu.
+   */
+  toggleSubMenu(element, state, wasKeyboardUsed) {
+    this.subMenu.toggleOptions(this.getCapabilities(element));
+    element.toggleSubMenu(this.subMenu, state, wasKeyboardUsed);
+  }
+
+  /**
+   * Get sub menu capabilities of an element.
+   * @param {DraggableElement} element Element to get capabilities for.
+   * @returns {object} Capabilities.
+   */
+  getCapabilities(element) {
+    return {
+      'edit': true,
+      'move-up': this.draggableElements[this.draggableElements.length - 1] !== element,
+      'move-down': this.draggableElements[0] !== element,
+      'remove': true,
+    };
   }
 }

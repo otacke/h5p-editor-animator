@@ -5,7 +5,10 @@
     "l10n.toolbarButton-video": "Video",
     "l10n.toolbarButton-shapes": "Shapes",
     "l10n.done": "Done",
+    "l10n.edit": "Edit",
     "l10n.remove": "Remove",
+    "l10n.moveUp": "Move up",
+    "l10n.moveDown": "Move down",
     "l10n.contentRequired": "You need to select a content type for this element.",
     "l10n.confirmationDialogRemoveHeader": "Delete element",
     "l10n.confirmationDialogRemoveDialog": "Do you really want to delete this element?",
@@ -16,7 +19,10 @@
     "l10n.toolbarButtonPreview": "Preview",
     "l10n.elements": "Elements",
     "l10n.animations": "Animations",
+    "l10n.options": "Options",
     "a11y.toolbarLabelContents": "Contents",
-    "a11y.toolbarLabelActions": "Actions"
+    "a11y.toolbarLabelActions": "Actions",
+    "a11y.openSubMenu": "Open submenu",
+    "a11y.closeSubMenu": "Close submenu"
   }
 }

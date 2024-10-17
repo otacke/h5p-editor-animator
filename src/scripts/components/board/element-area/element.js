@@ -44,9 +44,7 @@ export default class Element {
       onBroughtToFront: () => {},
       onSentToBack: () => {},
       onChanged: () => {},
-      getPosition: () => {},
-      onFocus: () => {},
-      onBlur: () => {}
+      getPosition: () => {}
     }, callbacks);
 
     this.buildDOM();
@@ -303,14 +301,6 @@ export default class Element {
     };
 
     this.dnbElement = this.params.dnb.add($element, '', options);
-
-    this.dnbElement.$element.get(0).addEventListener('focus', (event) => {
-      this.callbacks.onFocus(this);
-    });
-
-    this.dnbElement.$element.get(0).addEventListener('blur', (event) => {
-      this.callbacks.onBlur(this);
-    });
 
     this.dnbElement.contextMenu.on('contextMenuEdit', () => {
       this.callbacks.onEdited(this);

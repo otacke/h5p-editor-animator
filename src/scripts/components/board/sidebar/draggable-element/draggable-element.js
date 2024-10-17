@@ -5,16 +5,15 @@ import './draggable-element.scss';
 export default class DraggableElement {
 
   constructor(params = {}, callbacks = {}) {
-    this.params = Util.extend({
-      title: 'Undefined',
-      details: ''
-    }, params);
+    this.params = Util.extend({}, params);
+
     this.callbacks = Util.extend({
       onMouseDown: () => {},
       onDragStart: () => {},
       onDragEnter: () => {},
       onDragLeave: () => {},
-      onDragEnd: () => {}
+      onDragEnd: () => {},
+      toggleSubMenu: () => {}
     }, callbacks);
 
     this.dom = document.createElement('div');
@@ -50,9 +49,23 @@ export default class DraggableElement {
     this.params.details && (this.elementDetails.innerText = this.params.details);
     elementInfo.appendChild(this.elementDetails);
 
-    const menuButton = document.createElement('button');
-    menuButton.classList.add('h5p-editor-animator-sidebar-draggable-element-menu-button');
-    this.dom.appendChild(menuButton);
+    this.menuButton = document.createElement('button');
+    this.menuButton.classList.add('h5p-editor-animator-sidebar-draggable-element-menu-button');
+    this.menuButton.setAttribute('aria-label', this.params.dictionary.get('a11y.openSubMenu'));
+    this.menuButton.addEventListener('click', (event) => {
+      this.callbacks.toggleSubMenu(this, !this.isSubMenuOpen, event.pointerType === '');
+    });
+    this.menuButton.addEventListener('focus', (event) => {
+      this.callbacks.onMouseDown(this.subContentId, true);
+    });
+    this.menuButton.addEventListener('blur', (event) => {
+      window.requestAnimationFrame(() => {
+        if (!this.dom.contains(document.activeElement) && !this.isSubMenuOpen) {
+          this.callbacks.onMouseDown(this.subContentId, false);
+        }
+      });
+    });
+    this.dom.appendChild(this.menuButton);
 
     this.dom.addEventListener('mousedown', (event) => {
       this.handleMouseDown(event);
@@ -85,6 +98,15 @@ export default class DraggableElement {
    */
   getDOM() {
     return this.dom;
+  }
+
+  /*
+   * Determine whether the element belongs to the draggable.
+   * @param {HTMLElement} element Element.
+   * @returns {boolean} True if the element belongs to the dragable.
+   */
+  owns(element) {
+    return this.dom.contains(element);
   }
 
   /**
@@ -257,5 +279,51 @@ export default class DraggableElement {
     this.show();
 
     this.callbacks.onDragEnd(this);
+  }
+
+  toggleSubMenu(subMenu, state, wasKeyboardUsed) {
+    if (!state) {
+      subMenu.hide();
+      return;
+    }
+
+    // Register with subMenu
+    subMenu.setParent(this);
+
+    // Move subMenu below this button
+    this.dom.after(subMenu.getDOM());
+
+    this.isSubMenuOpen = true;
+    this.menuButton.classList.add('active');
+    this.menuButton.setAttribute('aria-label', this.params.dictionary.get('a11y.closeSubMenu'));
+
+    window.requestAnimationFrame(() => {
+      const draggableRect = this.dom.getBoundingClientRect();
+      const draggableStyle = window.getComputedStyle(this.dom);
+      const buttonRect = this.menuButton.getBoundingClientRect();
+
+      const draggablePaddingRight =
+        parseFloat(draggableStyle.getPropertyValue('padding-right'));
+
+      subMenu.show({
+        showActive: wasKeyboardUsed,
+        css: {
+          width: `${draggableRect.width}px`,
+          right: `calc(${buttonRect.width}px + ${draggablePaddingRight}px)`,
+          // eslint-disable-next-line no-magic-numbers
+          top: `calc(${this.dom.offsetTop}px + ${draggableRect.height / 2}px)`,
+        }
+      });
+
+      subMenu.once('hidden', (event) => {
+        this.isSubMenuOpen = false;
+        this.menuButton.classList.remove('active');
+        this.menuButton.setAttribute('aria-label', this.params.dictionary.get('a11y.openSubMenu'));
+
+        if (!event?.data?.keepFocus) {
+          this.dom.focus();
+        }
+      });
+    });
   }
 }
