@@ -394,7 +394,10 @@ export default class Board {
     const elementParams = this.params.elements[index];
 
     const contentTypeName = elementParams.contentType.library.split(' ')[0].split('.').pop();
-    const title = elementParams.contentType.metadata.title;
+
+    const title =
+      elementParams.contentType?.metadata?.title ??
+      H5PEditor.t('core', 'untitled').replace(':libraryTitle', contentTypeName);
 
     this.listElements.add({
       title: title,
