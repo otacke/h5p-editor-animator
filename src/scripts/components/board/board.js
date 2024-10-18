@@ -624,7 +624,10 @@ export default class Board {
       return;
     }
 
-    element.toggleHighlight(state);
+    if (state) {
+      this.dnb.focus(element);
+    }
+
     this.listElements.toggleHighlightElement(subContentId, state);
   }
 

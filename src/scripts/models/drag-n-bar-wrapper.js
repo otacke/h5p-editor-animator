@@ -77,8 +77,6 @@ export default class DragNBarWrapper {
    * @returns {H5P.DragNBarElement} Reference to added dnbelement.
    */
   add($element, clipboardData, options) {
-
-
     return this.dnb.add($element, clipboardData, options);
   }
 
@@ -88,6 +86,14 @@ export default class DragNBarWrapper {
    */
   remove(dnbElement) {
     this.dnb.elements.splice(this.dnb.elements.indexOf(dnbElement), 1);
+  }
+
+  /**
+   * Focus element in DnB toolbar.
+   * @param {Element} element Element.
+   */
+  focus(element) {
+    this.dnb.focus(element.getData().$element);
   }
 
   /**

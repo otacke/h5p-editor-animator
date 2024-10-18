@@ -188,14 +188,6 @@ export default class Element {
   }
 
   /**
-   * Set highlight.
-   * @param {boolean} state State of highlight.
-   */
-  toggleHighlight(state) {
-    this.dom.classList.toggle('highlighted', state);
-  }
-
-  /**
    * Get form data.
    * @returns {object} Form data.
    */
