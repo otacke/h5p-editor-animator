@@ -40,30 +40,5 @@
         white-space: nowrap;
       }
     }
-
-    .menu-button {
-      aspect-ratio: 1;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      height: 2rem;
-      margin: auto;
-      position: relative;
-
-      &:hover {
-        color: var(--color-primary);
-      }
-
-      &::before {
-        font-family: "H5PFontAwesome4", sans-serif;
-        font-size: 1.2rem;
-        left: 50%;
-        position: absolute;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        content: '\f142';
-        display: block;
-      }
-    }
   }
 }

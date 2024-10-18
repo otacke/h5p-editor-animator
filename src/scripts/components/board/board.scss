@@ -25,22 +25,22 @@
         }
 
         &.toolbar-button-list-view::before {
-          content: "\f03a";
+          content: var(--icon-fontawesome-list);
           font-weight: normal;
         }
 
         &.toolbar-button-zoom-in::before {
-          content: "\f00e";
+          content: var(--icon-fontawesome-magnifying-glass-plus);
           font-weight: normal;
         }
 
         &.toolbar-button-zoom-out::before {
-          content: "\f010";
+          content: var(--icon-fontawesome-magnifying-glass-minus);
           font-weight: normal;
         }
 
         &.toolbar-button-preview::before {
-          content: "\f26c";
+          content: var(--icon-fontawesome-tv);
         }
       }
     }
@@ -98,19 +98,19 @@
             }
 
             &.h5p-dragnbar-image-button::before {
-              content: "\f03e";
+              content: var(--icon-fontawesome-image);
             }
 
             &.h5p-dragnbar-shapes-button::before {
-              content: "\f096";
+              content: var(--icon-fontawesome-square-outline);
             }
 
             &.h5p-dragnbar-text-button::before {
-              content: "\f031";
+              content: var(--icon-fontawesome-font);
             }
 
             &.h5p-dragnbar-video-button::before {
-              content: "\f008";
+              content: var(--icon-fontawesome-film);
             }
           }
         }
