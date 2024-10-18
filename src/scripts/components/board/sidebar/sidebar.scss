@@ -1,5 +1,6 @@
 .h5p-editor-animator-sidebar {
   background-color: #fff;
+  height: var(--boardMaxHeight);
 
   &.display-none {
     display: none;

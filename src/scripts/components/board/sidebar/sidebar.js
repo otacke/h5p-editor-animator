@@ -15,9 +15,9 @@ export default class Sidebar {
 
     this.chooserButtons = [];
 
-    const chooser = document.createElement('div');
-    chooser.classList.add('chooser');
-    this.dom.appendChild(chooser);
+    this.chooser = document.createElement('div');
+    this.chooser.classList.add('chooser');
+    this.dom.appendChild(this.chooser);
 
     this.params.subComponents.forEach((subComponent, index) => {
       const chooserButton = document.createElement('button');
@@ -26,7 +26,7 @@ export default class Sidebar {
       chooserButton.addEventListener('click', () => {
         this.activate(index);
       });
-      chooser.append(chooserButton);
+      this.chooser.append(chooserButton);
 
       this.chooserButtons.push(chooserButton);
       this.dom.appendChild(subComponent.getDOM());
@@ -74,5 +74,10 @@ export default class Sidebar {
     this.chooserButtons.forEach((button, i) => {
       button.classList.toggle('active', i === index);
     });
+  }
+
+  resize() {
+    const rect = this.chooser.getBoundingClientRect();
+    this.dom.style.setProperty('--chooserHeight', `${rect.height}px`);
   }
 }

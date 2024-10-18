@@ -252,7 +252,8 @@ export default class Board {
   resize() {
     window.clearTimeout(this.pinWrapperTimeout);
     this.pinWrapperTimeout = window.requestAnimationFrame(() => {
-      this.elementArea.pinWrapperHeight();
+      this.dom.style.setProperty('--boardMaxHeight', `${this.elementArea.getSize().height}px`);
+      this.sidebar.resize();
     });
   }
 

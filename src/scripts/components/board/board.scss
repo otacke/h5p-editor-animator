@@ -60,8 +60,8 @@
           position: relative;
 
           .h5p-dragnbar-a {
-            background-color: rgba(26,115,217,.05);
-            border: 2px solid #fff;
+            background-color: var(--color-primary-5);
+            border: 2px solid var(--color-background);
             border-radius: 3px;
             box-sizing: border-box;
             color: var(--color-toolbar-button);
@@ -74,11 +74,11 @@
             height: var(--toolbar-button-size);
 
             &:hover {
-              background-color: rgba(26,115,217,.1);
+              background-color: var(--color-primary-10);
             }
 
             &:active {
-              background-color: rgba(26,115,217,.1);
+              background-color: var(--color-primary-10);
             }
 
             &:focus {
@@ -120,7 +120,7 @@
 
   .h5p-editor-animator-board-main-area {
     display: grid;
-    grid-template-columns: 1fr 28ch; // Might change
+    grid-template-columns: 1fr min(28ch, 30%);
     column-gap: 0.5rem;
   }
 

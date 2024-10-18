@@ -1,6 +1,8 @@
 .h5p-editor-animator-sidebar-list-elements {
   display: grid;
   grid-template-columns: 1fr;
+  max-height: calc(100% - var(--chooserHeight));
+  overflow: auto;
   row-gap: 0.25rem;
   padding: 0.25rem;
 

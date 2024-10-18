@@ -174,14 +174,6 @@ export default class ElementArea {
   }
 
   /**
-   * Pin wrapper height.
-   * Required to allow limit scroll height for zooming.
-   */
-  pinWrapperHeight() {
-    this.dom.style.setProperty('--maxHeight', `${this.getSize().height}px`);
-  }
-
-  /**
    * Get board size.
    * @returns {object} Height and width of board.
    */
