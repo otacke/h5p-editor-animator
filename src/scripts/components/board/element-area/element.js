@@ -178,6 +178,18 @@ export default class Element {
     return this.params.elementParams.contentType.subContentId;
   }
 
+  getTitle() {
+    return this.params.elementParams.contentType.metadata.title;
+  }
+
+  /**
+   * Determine whether element has DnB focus.
+   * @returns {boolean} True if element has focus.
+   */
+  hasFocus() {
+    return this.dnbElement?.focused ?? false;
+  }
+
   /**
    * Set index.
    * @param {number} index Index of map element.
@@ -226,6 +238,10 @@ export default class Element {
 
     if (params.height) {
       this.params.elementParams.height = params.height;
+    }
+
+    if (params.contentType) {
+      this.params.elementParams.contentType;
     }
 
     this.params.elementParams = this.fitIntoArea(this.params.elementParams);

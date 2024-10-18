@@ -22,6 +22,7 @@
     "l10n.options": "Options",
     "a11y.toolbarLabelContents": "Contents",
     "a11y.toolbarLabelActions": "Actions",
+    "a11y.addAnimation": "Add animation",
     "a11y.openSubMenu": "Open submenu",
     "a11y.closeSubMenu": "Close submenu"
   }

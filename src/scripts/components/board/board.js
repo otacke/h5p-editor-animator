@@ -3,12 +3,12 @@ import DragNBarWrapper from '@models/drag-n-bar-wrapper.js';
 import Dialog from '@components/dialog/dialog.js';
 import ElementArea from './element-area/element-area.js';
 import { ZOOM_LEVEL_MAX } from './element-area/element-area.js';
+import Animation from '@models/animation.js';
 import Element from './element-area/element.js';
 import ToolbarMain from './toolbar/toolbar-main.js';
 import ToolbarGroup from './toolbar/toolbar-group.js';
 import Sidebar from './sidebar/sidebar.js';
-import ListElements from './sidebar/list-elements.js';
-import ListAnimations from './sidebar/list-animations.js';
+import DraggablesList from './sidebar/draggables-list.js';
 
 import './board.scss';
 
@@ -31,6 +31,7 @@ export default class Board {
     }, callbacks);
 
     this.elements = [];
+    this.animations = [];
 
     this.dom = document.createElement('div');
     this.dom.classList.add('h5p-editor-animator-board');
@@ -57,7 +58,7 @@ export default class Board {
           // TODO: Remove this callback if we don't need it
         },
         onReleased: (index) => {
-          this.edit(this.elements[index]);
+          this.editElement(this.elements[index]);
         },
         onMoved: (index, x, y) => {
           this.updateElementPosition(
@@ -99,7 +100,7 @@ export default class Board {
             return;
           }
 
-          this.edit(element);
+          this.editElement(element);
         }
       }
     );
@@ -193,11 +194,11 @@ export default class Board {
     mainArea.append(this.elementArea.getDOM());
     this.dom.append(mainArea);
 
-    // TODO ...
-    this.listElements = new ListElements(
+    this.listElements = new DraggablesList(
       {
         dictionary: this.params.dictionary,
         title: this.params.dictionary.get('l10n.elements'),
+        prepend: true
       },
       {
         highlight: (subContentId, state) => {
@@ -207,7 +208,7 @@ export default class Board {
           this.changeElementZPosition(sourceIndex, moveOffset, active);
         },
         edit: (subContentId) => {
-          this.edit(this.getElementBySubContentId(subContentId));
+          this.editElement(this.getElementBySubContentId(subContentId));
         },
         remove: (subContentId) => {
           this.removeIfConfirmed(this.getElementBySubContentId(subContentId));
@@ -215,10 +216,24 @@ export default class Board {
       }
     );
 
-    this.listAnimations = new ListAnimations({
-      dictionary: this.params.dictionary,
-      title: this.params.dictionary.get('l10n.animations'),
-    });
+    this.listAnimations = new DraggablesList(
+      {
+        dictionary: this.params.dictionary,
+        title: this.params.dictionary.get('l10n.animations'),
+        addButtonLabel: this.params.dictionary.get('a11y.addAnimation'),
+      },
+      {
+        move: (sourceIndex, moveOffset) => {
+          // this.changeAnimationOrder(sourceIndex, moveOffset);
+        },
+        edit: (id) => {
+          this.editAnimation(id);
+        },
+        remove: () => {
+          // this.removeAnimationIfConfirmed();
+        }
+      }
+    );
 
     this.sidebar = new Sidebar({
       subComponents: [this.listElements, this.listAnimations]
@@ -229,6 +244,10 @@ export default class Board {
 
     this.params.elements.forEach((elementParams) => {
       this.createElement(elementParams);
+    });
+
+    this.params.animations.forEach((animationParams) => {
+      this.createAnimation(animationParams);
     });
 
     this.toggleSidebar(false);
@@ -360,7 +379,7 @@ export default class Board {
       },
       {
         onEdited: (element) => {
-          this.edit(element);
+          this.editElement(element);
         },
         onRemoved: (element) => {
           this.removeIfConfirmed(element);
@@ -403,10 +422,44 @@ export default class Board {
     this.listElements.add({
       title: title,
       details: contentTypeName,
-      subContentId: elementParams.contentType.subContentId
+      id: elementParams.contentType.subContentId
     });
 
     return element.getData().$element;
+  }
+
+  getElementInFocus() {
+    return this.elements.find((element) => element.hasFocus());
+  }
+
+  createAnimation(params = {}) {
+    const animation = new Animation(
+      {
+        id: this.animations.length,
+        semantics: this.params.animationsFields,
+        params: params,
+        originalInstance: this.params.globals.get('animationsGroupInstance')
+      },
+      {
+        onChanged: (index, elementParams) => {
+          // TODO: THIS WILL BREAK ON REORDERING!
+          this.params.animations[index] = elementParams;
+          this.callbacks.onChanged({ animations: this.params.animations });
+        }
+      }
+    );
+
+    this.animations.push(animation);
+
+    const element = this.getElementBySubContentId(params.subContentId);
+
+    this.listAnimations.add({
+      title: element.getTitle(),
+      details: `${params.effect} \u00b7 ${params.startWith} \u00b7 ${params.duration}s`,
+      id: animation.getId()
+    });
+
+    return animation;
   }
 
   /**
@@ -471,7 +524,7 @@ export default class Board {
       confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveConfirm')
     });
     this.deleteDialog.on('confirmed', () => {
-      this.remove(element);
+      this.removeElement(element);
     });
 
     this.deleteDialog.appendTo(this.dom.closest('.h5peditor-animator'));
@@ -482,7 +535,7 @@ export default class Board {
    * Remove map element.
    * @param {Element} elementToRemove Element to be removed.
    */
-  remove(elementToRemove) {
+  removeElement(elementToRemove) {
     const subContentId = elementToRemove.getSubContentId();
 
     this.listElements.remove(subContentId);
@@ -501,7 +554,12 @@ export default class Board {
 
     this.dnb.blurAll();
 
-    this.callbacks.onChanged({ elements: this.params.elements });
+    // TODO: Remove animations that are linked to this element incl. params
+
+    this.callbacks.onChanged({
+      elements: this.params.elements,
+      animations: this.params.animations
+    });
   }
 
   /**
@@ -536,10 +594,8 @@ export default class Board {
    * Edit map element.
    * @param {Element} element Map element to be edited.
    */
-  edit(element) {
-    this.toolbar.hide();
-    this.elementArea.hide();
-    this.sidebar.hide();
+  editElement(element) {
+    this.hide();
 
     this.dialog.showForm({
       form: element.getData().form,
@@ -548,11 +604,7 @@ export default class Board {
         const isValid = this.validateFormChildren(element);
 
         if (isValid) {
-          this.toolbar.show();
-          this.elementArea.show();
-          if (this.isListViewActive) {
-            this.sidebar.show();
-          }
+          this.show();
 
           const subContentId = element.getSubContentId();
           const elementParams = this.params.elements.find(
@@ -560,20 +612,16 @@ export default class Board {
           );
           element.updateParams(elementParams);
 
-          this.listElements.update(
-            element.getSubContentId(),
-            { title: elementParams.contentType.metadata.title }
-          );
+          this.listElements.update(element.getSubContentId(), {
+            title: element.getTitle(),
+            id: element.getSubContentId()
+          });
         }
 
         return isValid;
       },
       removeCallback: () => {
-        this.toolbar.show();
-        this.elementArea.show();
-        if (this.isListViewActive) {
-          this.sidebar.show();
-        }
+        this.show();
         this.removeIfConfirmed(element);
       }
     });
@@ -581,6 +629,71 @@ export default class Board {
     setTimeout(() => {
       this.dnb.blurAll();
     }, 0);
+  }
+
+  editAnimation(id = -1) {
+    let animation;
+
+    if (typeof id === 'number' && id >= 0 && id < this.animations.length) {
+      animation = this.animations[id];
+    }
+    else {
+      const element = this.getElementInFocus();
+      if (element) {
+        animation = this.createAnimation({
+          subContentId: element.getSubContentId()
+        });
+        id = animation.getId();
+      }
+    }
+
+    if (!animation) {
+      return;
+    }
+
+    this.hide();
+
+    this.dialog.showForm({
+      form: animation.getForm(),
+      returnFocusTo: document.activeElement,
+      doneCallback: () => {
+        this.show();
+
+        // TODO: Validate form
+        const params = animation.getParams();
+        animation.updateParams(params);
+
+        const element = this.getElementBySubContentId(params.subContentId);
+
+        this.listAnimations.update(
+          animation.getId(),
+          {
+            title: element.getTitle(),
+            details: `${params.effect} \u00b7 ${params.startWith} \u00b7 ${params.duration}s`,
+          }
+        );
+
+        return true;
+      },
+      removeCallback: () => {
+        this.show();
+        // TODO: Implement removal incl. confirmation dialog
+      }
+    });
+  }
+
+  show() {
+    this.toolbar.show();
+    this.elementArea.show();
+    if (this.isListViewActive) {
+      this.sidebar.show();
+    }
+  }
+
+  hide() {
+    this.toolbar.hide();
+    this.elementArea.hide();
+    this.sidebar.hide();
   }
 
   /**
@@ -647,6 +760,15 @@ export default class Board {
    */
   handleDocumentMouseDown(event) {
     this.listElements.handleDocumentMouseDown(event);
+
+    window.setTimeout(() => {
+      if (this.getElementInFocus()) {
+        this.listAnimations.enableAddButton();
+      }
+      else {
+        this.listAnimations.disableAddButton();
+      }
+    }, 100); // TODO: DnB requires some time before it updates the focus, find a better way
   }
 
   /**

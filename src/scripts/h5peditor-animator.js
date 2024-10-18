@@ -188,6 +188,13 @@ export default class Animator extends H5P.EventDispatcher {
       this, elementsGroup, this.params.elements, () => {} // No setValue needed
     ));
 
+    const animationsGroup = this.field.fields.find((field) => field.name === 'animations').field;
+    const animationsFields = H5P.cloneObject(animationsGroup.fields, true);
+
+    this.globals.set('animationsGroupInstance', new H5PEditor.widgets[animationsGroup.type](
+      this, animationsGroup, this.params.animations, () => {} // No setValue needed
+    ));
+
     this.board = new Board(
       {
         dictionary: this.dictionary,
@@ -195,6 +202,7 @@ export default class Animator extends H5P.EventDispatcher {
         elements: this.params.elements,
         elementsFields: elementsFields,
         animations: this.params.animations,
+        animationsFields: animationsFields,
         subContentOptions: await this.getSubcontentOptions()
       },
       {

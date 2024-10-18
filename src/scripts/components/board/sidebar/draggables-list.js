@@ -2,9 +2,9 @@ import Util from '@services/util.js';
 import DraggableElement from './draggable-element/draggable-element.js';
 import SubMenu from './submenu.js';
 
-import './list-elements.scss';
+import './draggables-list.scss';
 
-export default class ListElements {
+export default class DraggablesList {
 
   /**
    * @class
@@ -17,6 +17,7 @@ export default class ListElements {
    */
   constructor(params = {}, callbacks = {}) {
     this.params = Util.extend({}, params);
+
     this.callbacks = Util.extend({
       highlight: () => {},
       move: () => {},
@@ -30,7 +31,25 @@ export default class ListElements {
     this.dropzoneElement = null;
 
     this.dom = document.createElement('div');
-    this.dom.classList.add('h5p-editor-animator-sidebar-list-elements');
+    this.dom.classList.add('h5p-editor-animator-sidebar-list');
+    this.dom.classList.add(this.params.title.toLowerCase().replace(' ', '-'));
+
+    this.draggablesWrapper = document.createElement('div');
+    this.draggablesWrapper.classList.add('h5p-editor-animator-sidebar-list-draggables-wrapper');
+    this.dom.append(this.draggablesWrapper);
+
+    if (this.params.addButtonLabel) {
+      this.addButton = document.createElement('button');
+      this.addButton.classList.add('h5p-editor-animator-sidebar-list-add-button');
+      this.addButton.setAttribute(
+        'aria-label', this.params.addButtonLabel ?? this.params.dictionary.get('a11y.addElement')
+      );
+      this.addButton.addEventListener('click', () => {
+        this.callbacks.edit();
+      });
+      this.disableAddButton();
+      this.dom.append(this.addButton);
+    }
 
     // Submenu
     this.subMenu = new SubMenu(
@@ -41,7 +60,7 @@ export default class ListElements {
             id: 'edit',
             label: this.params.dictionary.get('l10n.edit'),
             onClick: ((draggableElement) => {
-              this.callbacks.edit(draggableElement.getSubContentId());
+              this.callbacks.edit(draggableElement.getId());
             }),
             keepFocus: true
           },
@@ -67,7 +86,7 @@ export default class ListElements {
             id: 'remove',
             label: this.params.dictionary.get('l10n.remove'),
             onClick: ((draggableElement) => {
-              this.callbacks.remove(draggableElement.getSubContentId(), -1);
+              this.callbacks.remove(draggableElement.getId(), -1);
             }),
             keepFocus: true
           }
@@ -107,6 +126,27 @@ export default class ListElements {
     this.dom.classList.add('display-none');
   }
 
+  /**
+   * Enable add button.
+   */
+  enableAddButton() {
+    this.addButton.disabled = false;
+  }
+
+  /**
+   * Disable add button.
+   */
+  disableAddButton() {
+    this.addButton.disabled = true;
+  }
+
+  /**
+   * Add a draggable element to list.
+   * @param {object} [params] Parameters.
+   * @param {string} [params.title] Title of content from metadata.
+   * @param {string} [params.id] Id.
+   * @param {string} [params.details] Details, e.g. Content type or animation details.
+   */
   add(params = {}) {
     const draggableElement = new DraggableElement(
       {
@@ -137,15 +177,22 @@ export default class ListElements {
 
     this.draggableElements.push(draggableElement);
 
-    this.dom.prepend(draggableElement.getDOM());
+    if (params.prepend) {
+      this.draggablesWrapper.prepend(draggableElement.getDOM());
+    }
+    else {
+      this.draggablesWrapper.append(draggableElement.getDOM());
+    }
   }
 
   /**
    * Remove element.
-   * @param {string} subContentId Sub content ID.
+   * @param {string|number} id Id of the element to be removed.
    */
-  remove(subContentId) {
-    const draggableElement = this.getBySubContentId(subContentId);
+  remove(id) {
+    // Workaround. It's not guaranteed that the element received a subcontentid on creation.
+    let draggableElement = this.draggableElements.find((element) => element.getId() === undefined);
+    draggableElement = draggableElement ?? this.getById(id);
 
     if (draggableElement) {
       draggableElement.getDOM().remove();
@@ -155,21 +202,24 @@ export default class ListElements {
 
   /**
    * Update element.
-   * @param {string} subContentId Sub content Id of the element to be updated.
+   * @param {string} id Id of the element to be updated.
    * @param {object} params Parameters to be updated.
    */
-  update(subContentId, params = {}) {
-    const draggableElement = this.getBySubContentId(subContentId);
-    draggableElement?.setParams({ title: params.title });
+  update(id, params = {}) {
+    // Workaround. It's not guaranteed that the element received a subcontentid on creation.
+    let draggableElement = this.draggableElements.find((element) => element.getId() === undefined);
+    draggableElement = draggableElement ?? this.getById(id);
+
+    draggableElement?.setParams({ title: params.title, details: params.details, id: params.id });
   }
 
   /**
    * Get element by sub content Id.
-   * @param {string} subContentId Sub content Id.
+   * @param {string|number} id Id.
    * @returns {DraggableElement} Draggable element.
    */
-  getBySubContentId(subContentId) {
-    return this.draggableElements.find((draggableElement) => draggableElement.getSubContentId() === subContentId);
+  getById(id) {
+    return this.draggableElements.find((draggableElement) => draggableElement.getId() === id);
   }
 
   /**
@@ -182,12 +232,12 @@ export default class ListElements {
   }
 
   /**
-   * toggle the highlight of an element.
-   * @param {string} subContentId Sub content Id of the element to be updated.
+   * Toggle the highlight of an element.
+   * @param {string|number} id Id of the element to be updated.
    * @param {boolean} state True to set highlight, false to remove highlight.
    */
-  toggleHighlightElement(subContentId, state) {
-    const draggableElement = this.getBySubContentId(subContentId);
+  toggleHighlightElement(id, state) {
+    const draggableElement = this.getById(id);
     draggableElement?.toggleHighlight(state);
   }
 

@@ -56,12 +56,12 @@ export default class DraggableElement {
       this.callbacks.toggleSubMenu(this, !this.isSubMenuOpen, event.pointerType === '');
     });
     this.menuButton.addEventListener('focus', (event) => {
-      this.callbacks.onMouseDown(this.subContentId, true);
+      this.callbacks.onMouseDown(this.getId(), true);
     });
     this.menuButton.addEventListener('blur', (event) => {
       window.requestAnimationFrame(() => {
         if (!this.dom.contains(document.activeElement) && !this.isSubMenuOpen) {
-          this.callbacks.onMouseDown(this.subContentId, false);
+          this.callbacks.onMouseDown(this.getId(), false);
         }
       });
     });
@@ -100,6 +100,13 @@ export default class DraggableElement {
     return this.dom;
   }
 
+  /**
+   * Remove element.
+   */
+  remove() {
+    this.dom.remove();
+  }
+
   /*
    * Determine whether the element belongs to the draggable.
    * @param {HTMLElement} element Element.
@@ -121,8 +128,8 @@ export default class DraggableElement {
       else if (key === 'details') {
         this.elementDetails.innerText = params[key];
       }
-      else if (key === 'subContentId') {
-        this.subContentId = params[key];
+      else if (key === 'id') {
+        this.id = params[key];
       }
     }
   }
@@ -147,8 +154,8 @@ export default class DraggableElement {
    * Get sub content Id.
    * @returns {string} Sub content Id.
    */
-  getSubContentId() {
-    return this.subContentId;
+  getId() {
+    return this.id;
   }
 
   /**
@@ -204,7 +211,7 @@ export default class DraggableElement {
       y: event.clientY
     };
 
-    this.callbacks.onMouseDown(this.subContentId, true);
+    this.callbacks.onMouseDown(this.getId(), true);
   }
 
   /**
@@ -216,7 +223,7 @@ export default class DraggableElement {
       return; // Clicked on draggable element
     }
 
-    this.callbacks.onMouseDown(this.subContentId, false);
+    this.callbacks.onMouseDown(this.getId(), false);
   }
 
   /**
