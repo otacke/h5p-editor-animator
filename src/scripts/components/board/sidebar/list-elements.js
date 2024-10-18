@@ -10,14 +10,16 @@ export default class ListElements {
    * @class
    * @param {object} [params] Parameters.
    * @param {object} [callbacks] Callbacks.
-   * @param {function} [callbacks.toggleHighlightElement] Callback for toggling highlight of an element.
-   * @param {function} [callbacks.changeElementZPosition] Callback for changing element z position.
+   * @param {function} [callbacks.highlight] Callback for toggling highlight of an element.
+   * @param {function} [callbacks.move] Callback for changing element z position.
+   * @param {function} [callbacks.edit] Callback for editing an element.
+   * @param {function} [callbacks.remove] Callback for removing an element.
    */
   constructor(params = {}, callbacks = {}) {
     this.params = Util.extend({}, params);
     this.callbacks = Util.extend({
-      toggleHighlightElement: () => {},
-      changeElementZPosition: () => {},
+      highlight: () => {},
+      move: () => {},
       edit: () => {},
       move: () => {},
       remove: () => {}
@@ -48,7 +50,7 @@ export default class ListElements {
             label: this.params.dictionary.get('l10n.moveUp'),
             onClick: ((draggableElement) => {
               const index = this.getElementIndex(draggableElement);
-              this.callbacks.changeElementZPosition(index, index + 1, false);
+              this.callbacks.move(index, index + 1, false);
             }),
             keepFocus: true
           },
@@ -57,7 +59,7 @@ export default class ListElements {
             label: this.params.dictionary.get('l10n.moveDown'),
             onClick: ((draggableElement) => {
               const index = this.getElementIndex(draggableElement);
-              this.callbacks.changeElementZPosition(index, index - 1, false);
+              this.callbacks.move(index, index - 1, false);
             }),
             keepFocus: true
           },
@@ -112,7 +114,7 @@ export default class ListElements {
       },
       {
         onMouseDown: (subContentId, state) => {
-          this.callbacks.toggleHighlightElement(subContentId, state);
+          this.callbacks.highlight(subContentId, state);
         },
         onDragStart: (element) => {
           this.handleDragStart(element);
@@ -143,9 +145,7 @@ export default class ListElements {
    * @param {string} subContentId Sub content ID.
    */
   remove(subContentId) {
-    // TODO: Separate function
-    const draggableElement =
-      this.draggableElements.find((draggableElement) => draggableElement.getSubContentId() === subContentId);
+    const draggableElement = this.getBySubContentId(subContentId);
 
     if (draggableElement) {
       draggableElement.getDOM().remove();
@@ -159,11 +159,17 @@ export default class ListElements {
    * @param {object} params Parameters to be updated.
    */
   update(subContentId, params = {}) {
-    // TODO: Separate function
-    const draggableElement =
-      this.draggableElements.find((draggableElement) => draggableElement.getSubContentId() === subContentId);
-
+    const draggableElement = this.getBySubContentId(subContentId);
     draggableElement?.setParams({ title: params.title });
+  }
+
+  /**
+   * Get element by sub content Id.
+   * @param {string} subContentId Sub content Id.
+   * @returns {DraggableElement} Draggable element.
+   */
+  getBySubContentId(subContentId) {
+    return this.draggableElements.find((draggableElement) => draggableElement.getSubContentId() === subContentId);
   }
 
   /**
@@ -181,9 +187,7 @@ export default class ListElements {
    * @param {boolean} state True to set highlight, false to remove highlight.
    */
   toggleHighlightElement(subContentId, state) {
-    const draggableElement =
-      this.draggableElements.find((draggableElement) => draggableElement.getSubContentId() === subContentId);
-
+    const draggableElement = this.getBySubContentId(subContentId);
     draggableElement?.toggleHighlight(state);
   }
 
@@ -239,7 +243,7 @@ export default class ListElements {
         return;
       }
 
-      this.callbacks.changeElementZPosition(index1, index2);
+      this.callbacks.move(index1, index2);
     }
   }
 

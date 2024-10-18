@@ -200,17 +200,17 @@ export default class Board {
         title: this.params.dictionary.get('l10n.elements'),
       },
       {
-        toggleHighlightElement: (subContentId, state) => {
+        highlight: (subContentId, state) => {
           this.toggleHighlightElement(subContentId, state);
         },
-        changeElementZPosition: (sourceIndex, moveOffset, active) => {
-          return this.changeElementZPosition(sourceIndex, moveOffset, active);
+        move: (sourceIndex, moveOffset, active) => {
+          this.changeElementZPosition(sourceIndex, moveOffset, active);
         },
         edit: (subContentId) => {
-          this.edit(this.elements.find((element) => element.getSubContentId() === subContentId));
+          this.edit(this.getElementBySubContentId(subContentId));
         },
         remove: (subContentId) => {
-          this.removeIfConfirmed(this.elements.find((element) => element.getSubContentId() === subContentId));
+          this.removeIfConfirmed(this.getElementBySubContentId(subContentId));
         }
       }
     );
@@ -387,7 +387,7 @@ export default class Board {
     );
 
     // TODO: Rename this.elements to something better
-    // Important: The order of these must not be changed
+    // Important: The order of these must not be changed, find things by subcontent id, not index
     this.elements.push(element);
     this.elementArea.appendElement(element.getDOM());
 
@@ -479,19 +479,16 @@ export default class Board {
 
   /**
    * Remove map element.
-   * @param {Element} element Element to be removed.
+   * @param {Element} elementToRemove Element to be removed.
    */
-  remove(element) {
-    const subContentId = element.getSubContentId();
+  remove(elementToRemove) {
+    const subContentId = elementToRemove.getSubContentId();
 
     this.listElements.remove(subContentId);
 
-    const removeIndex = element.getIndex();
-
     // Remove element
-    element.remove();
-    this.elements.splice(removeIndex, 1);
-
+    elementToRemove.remove();
+    this.elements = this.elements.filter((element) => element !== elementToRemove);
     this.params.elements = this.params.elements.filter((paramsElement) => {
       return paramsElement.contentType.subContentId !== subContentId;
     });
@@ -556,7 +553,10 @@ export default class Board {
             this.sidebar.show();
           }
 
-          const elementParams = this.params.elements[element.getIndex()];
+          const subContentId = element.getSubContentId();
+          const elementParams = this.params.elements.find(
+            (element) => element.contentType.subContentId === subContentId
+          );
           element.updateParams(elementParams);
 
           this.listElements.update(
@@ -619,13 +619,22 @@ export default class Board {
    * @param {boolean} state True to highlight, false to remove highlight.
    */
   toggleHighlightElement(subContentId, state) {
-    const element = this.elements.find((element) => element.getSubContentId() === subContentId);
+    const element = this.getElementBySubContentId(subContentId);
     if (!element) {
       return;
     }
 
     element.toggleHighlight(state);
     this.listElements.toggleHighlightElement(subContentId, state);
+  }
+
+  /**
+   * Get element by subcontent ID.
+   * @param {string} subContentId SubContentId.
+   * @returns {Element} Element.
+   */
+  getElementBySubContentId(subContentId) {
+    return this.elements.find((element) => element.getSubContentId() === subContentId);
   }
 
   /**

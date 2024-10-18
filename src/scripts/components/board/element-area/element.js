@@ -188,14 +188,6 @@ export default class Element {
   }
 
   /**
-   * Get index.
-   * @returns {number} index Index of map element.
-   */
-  getIndex() {
-    return this.params.index;
-  }
-
-  /**
    * Set highlight.
    * @param {boolean} state State of highlight.
    */
