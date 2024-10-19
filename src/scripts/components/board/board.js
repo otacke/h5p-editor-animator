@@ -468,8 +468,6 @@ export default class Board {
       `${params.duration}s`
     ].join(' \u00b7 ');
 
-    console.log('animation', animation.getId());
-
     this.listAnimations.add({
       title: element.getTitle(),
       details: details,
