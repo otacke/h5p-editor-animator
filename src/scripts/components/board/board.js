@@ -768,6 +768,7 @@ export default class Board {
   handleDocumentMouseDown(event) {
     this.listElements.handleDocumentMouseDown(event);
 
+    const dnbFocusTimeout = 100; // TODO: DnB requires some time before it updates the focus, find a better way
     window.setTimeout(() => {
       if (this.getElementInFocus()) {
         this.listAnimations.enableAddButton();
@@ -775,7 +776,7 @@ export default class Board {
       else {
         this.listAnimations.disableAddButton();
       }
-    }, 100); // TODO: DnB requires some time before it updates the focus, find a better way
+    }, dnbFocusTimeout);
   }
 
   /**

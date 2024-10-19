@@ -1,6 +1,22 @@
 .toolbar-button-wrapper {
   position: relative;
 
+  .tooltip {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    font-family: "Open Sans", sans-serif;
+    font-size: 0.6em;
+    left: 50%;
+    transform: translate(-50%, 0);
+    line-height: 2em;
+    position: absolute;
+    padding: 0 0.5em;
+    top: 100%;
+    white-space: pre;
+    z-index: 1;
+  }
+
   &:not(:hover) .tooltip {
     visibility: hidden;
   }
@@ -57,22 +73,6 @@
         color: #fff;
       }
     }
-  }
-
-  .tooltip {
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    font-family: "Open Sans", sans-serif;
-    font-size: 0.6em;
-    left: 50%;
-    transform: translate(-50%, 0);
-    line-height: 2em;
-    position: absolute;
-    padding: 0 0.5em;
-    top: 100%;
-    white-space: pre;
-    z-index: 1;
   }
 
   &.display-none {
