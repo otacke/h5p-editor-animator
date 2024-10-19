@@ -198,7 +198,7 @@ export default class Board {
       {
         dictionary: this.params.dictionary,
         title: this.params.dictionary.get('l10n.elements'),
-        prepend: true
+        reversed: true
       },
       {
         highlight: (subContentId, state) => {
@@ -211,7 +211,7 @@ export default class Board {
           this.editElement(this.getElementBySubContentId(subContentId));
         },
         remove: (subContentId) => {
-          this.removeIfConfirmed(this.getElementBySubContentId(subContentId));
+          this.removeElementIfConfirmed(this.getElementBySubContentId(subContentId));
         }
       }
     );
@@ -223,17 +223,18 @@ export default class Board {
         addButtonLabel: this.params.dictionary.get('a11y.addAnimation'),
       },
       {
-        highlight: (index, state) => {
-          this.toggleHighlightElement(this.animations[index].getSubContentId(), state, index);
+        highlight: (id, state) => {
+          const animation = this.animations.find((animation) => animation.getId() === id);
+          this.toggleHighlightElement(animation.getSubContentId(), state, id);
         },
         move: (sourceIndex, moveOffset) => {
-          // this.changeAnimationOrder(sourceIndex, moveOffset);
+          this.changeAnimationOrder(sourceIndex, moveOffset);
         },
         edit: (id) => {
           this.editAnimation(id);
         },
-        remove: () => {
-          // this.removeAnimationIfConfirmed();
+        remove: (id) => {
+          this.removeAnimationIfConfirmed(id);
         }
       }
     );
@@ -392,7 +393,7 @@ export default class Board {
           this.editElement(element);
         },
         onRemoved: (element) => {
-          this.removeIfConfirmed(element);
+          this.removeElementIfConfirmed(element);
         },
         onBroughtToFront: (element) => {
           this.bringToFront(element);
@@ -445,14 +446,14 @@ export default class Board {
   createAnimation(params = {}) {
     const animation = new Animation(
       {
-        id: this.animations.length,
+        id: H5P.createUUID(),
         semantics: this.params.animationsFields,
         params: params,
         originalInstance: this.params.globals.get('animationsGroupInstance')
       },
       {
-        onChanged: (index, elementParams) => {
-          // TODO: THIS WILL BREAK ON REORDERING!
+        onChanged: (id, elementParams) => {
+          const index = this.animations.findIndex((animation) => animation.getId() === id);
           this.params.animations[index] = elementParams;
           this.callbacks.onChanged({ animations: this.params.animations });
         }
@@ -531,15 +532,34 @@ export default class Board {
    * Remove element after confirmation.
    * @param {Element} element Element to be removed.
    */
-  removeIfConfirmed(element) {
+  removeElementIfConfirmed(element) {
     this.deleteDialog = new H5P.ConfirmationDialog({
-      headerText: this.params.dictionary.get('l10n.confirmationDialogRemoveHeader'),
-      dialogText: this.params.dictionary.get('l10n.confirmationDialogRemoveDialog'),
-      cancelText: this.params.dictionary.get('l10n.confirmationDialogRemoveCancel'),
-      confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveConfirm')
+      headerText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementHeader'),
+      dialogText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementDialog'),
+      cancelText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementCancel'),
+      confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementConfirm')
     });
     this.deleteDialog.on('confirmed', () => {
       this.removeElement(element);
+    });
+
+    this.deleteDialog.appendTo(this.dom.closest('.h5peditor-animator'));
+    this.deleteDialog.show();
+  }
+
+  /**
+   * Remove animation after confirmation.
+   * @param {string} id Id of the animation to be removed.
+   */
+  removeAnimationIfConfirmed(id) {
+    this.deleteDialog = new H5P.ConfirmationDialog({
+      headerText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationHeader'),
+      dialogText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationDialog'),
+      cancelText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationCancel'),
+      confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationConfirm')
+    });
+    this.deleteDialog.on('confirmed', () => {
+      this.removeAnimation(id);
     });
 
     this.deleteDialog.appendTo(this.dom.closest('.h5peditor-animator'));
@@ -569,12 +589,31 @@ export default class Board {
 
     this.dnb.blurAll();
 
-    // TODO: Remove animations that are linked to this element incl. params
+    // Remove animations that are linked to this element
+    this.animations
+      .filter((animation) => animation.getSubContentId() === subContentId)
+      .map((animation) => animation.getId())
+      .forEach((id) => {
+        this.removeAnimation(id);
+      });
 
     this.callbacks.onChanged({
       elements: this.params.elements,
       animations: this.params.animations
     });
+  }
+
+  /**
+   * Remove animation.
+   * @param {string} id Id of the animation to be removed.
+   */
+  removeAnimation(id) {
+    this.listAnimations.remove(id);
+    const deleteIndex = this.animations.findIndex((animation) => animation.getId() === id);
+    this.animations.splice(deleteIndex, 1);
+    this.params.animations.splice(deleteIndex, 1);
+
+    this.callbacks.onChanged({ animations: this.params.animations });
   }
 
   /**
@@ -616,7 +655,7 @@ export default class Board {
       form: element.getData().form,
       returnFocusTo: document.activeElement,
       doneCallback: () => {
-        const isValid = this.validateFormChildren(element);
+        const isValid = this.validateFormChildren(element.getData().form, element.getData().children);
 
         if (isValid) {
           this.show();
@@ -637,7 +676,7 @@ export default class Board {
       },
       removeCallback: () => {
         this.show();
-        this.removeIfConfirmed(element);
+        this.removeElementIfConfirmed(element);
       }
     });
 
@@ -646,13 +685,13 @@ export default class Board {
     }, 0);
   }
 
-  editAnimation(id = -1) {
-    let animation;
-
-    if (typeof id === 'number' && id >= 0 && id < this.animations.length) {
-      animation = this.animations[id];
-    }
-    else {
+  /**
+   * Edit animation.
+   * @param {string} id Id of animation to be edited.
+   */
+  editAnimation(id) {
+    let animation = this.animations.find((animation) => animation.getId() === id);
+    if (!animation) {
       const element = this.getElementInFocus();
       if (element) {
         animation = this.createAnimation({
@@ -672,37 +711,42 @@ export default class Board {
       form: animation.getForm(),
       returnFocusTo: document.activeElement,
       doneCallback: () => {
-        this.show();
+        const isValid = this.validateFormChildren(animation.getForm(), animation.getChildren());
 
-        // TODO: Validate form
-        const params = animation.getParams();
-        animation.updateParams(params);
+        if (isValid) {
+          this.show();
+          const params = animation.getParams();
+          animation.updateParams(params);
 
-        const element = this.getElementBySubContentId(params.subContentId);
+          const element = this.getElementBySubContentId(params.subContentId);
 
-        const details = [
-          this.params.dictionary.get(`l10n.animation.${params.effect}`),
-          this.params.dictionary.get(`l10n.animation.${params.startWith}`),
-          `${params.duration}s`
-        ].join(' \u00b7 ');
+          const details = [
+            this.params.dictionary.get(`l10n.animation.${params.effect}`),
+            this.params.dictionary.get(`l10n.animation.${params.startWith}`),
+            `${params.duration}s`
+          ].join(' \u00b7 ');
 
-        this.listAnimations.update(
-          animation.getId(),
-          {
-            title: element.getTitle(),
-            details: details,
-          }
-        );
+          this.listAnimations.update(
+            animation.getId(),
+            {
+              title: element.getTitle(),
+              details: details,
+            }
+          );
+        }
 
-        return true;
+        return isValid;
       },
       removeCallback: () => {
         this.show();
-        // TODO: Implement removal incl. confirmation dialog
+        this.removeAnimationIfConfirmed(id);
       }
     });
   }
 
+  /**
+   * Show.
+   */
   show() {
     this.toolbar.show();
     this.elementArea.show();
@@ -711,6 +755,9 @@ export default class Board {
     }
   }
 
+  /**
+   * Hide.
+   */
   hide() {
     this.toolbar.hide();
     this.elementArea.hide();
@@ -719,22 +766,23 @@ export default class Board {
 
   /**
    * Validate form children.
-   * @param {Element} element Mapelement that the form belongs to.
+   * @param {object} form Form to be validated.
+   * @param {object} children Children to be validated.
    * @returns {boolean} True if form is valid, else false.
    */
-  validateFormChildren(element) {
+  validateFormChildren(form, children) {
     /*
      * `some` would be quicker than `every`, but all fields should display
      * their validation message
      */
-    return element.getData().children.every((child) => {
+    return children.every((child) => {
       // Accept incomplete subcontent, but not no subcontent
       if (child instanceof H5PEditor.Library && !child.validate()) {
         if (child.$select.get(0).value !== '-') {
           return true; // Some subcontent is selected at least
         }
 
-        const errors = element.getData().form
+        const errors = form
           .querySelector('.field.library .h5p-errors');
 
         if (errors) {
@@ -765,7 +813,7 @@ export default class Board {
     }
 
     this.listElements.toggleHighlightElement(subContentId, state);
-    if (typeof id === 'number') {
+    if (id) {
       this.listAnimations.toggleHighlightElement(id, state);
     }
   }
@@ -819,5 +867,20 @@ export default class Board {
       [this.params.elements[indexTarget], this.params.elements[indexSource]];
 
     this.callbacks.onChanged({ elements: this.params.elements });
+  }
+
+  changeAnimationOrder(indexSource, indexTarget, active = true) {
+    if (
+      typeof indexSource !== 'number' || indexSource < 0 || indexSource > this.params.animations.length - 1 ||
+      typeof indexTarget !== 'number' || indexTarget < 0 || indexTarget > this.params.animations.length - 1
+    ) {
+      return;
+    }
+    this.listAnimations.swapElements(indexSource, indexTarget, !active);
+
+    [this.params.animations[indexSource], this.params.animations[indexTarget]] =
+      [this.params.animations[indexTarget], this.params.animations[indexSource]];
+
+    this.callbacks.onChanged({ animations: this.params.animations });
   }
 }

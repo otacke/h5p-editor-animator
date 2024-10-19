@@ -16,7 +16,9 @@ export default class DraggablesList {
    * @param {function} [callbacks.remove] Callback for removing an element.
    */
   constructor(params = {}, callbacks = {}) {
-    this.params = Util.extend({}, params);
+    this.params = Util.extend({
+      reversed: false
+    }, params);
 
     this.callbacks = Util.extend({
       highlight: () => {},
@@ -69,7 +71,7 @@ export default class DraggablesList {
             label: this.params.dictionary.get('l10n.moveUp'),
             onClick: ((draggableElement) => {
               const index = this.getElementIndex(draggableElement);
-              this.callbacks.move(index, index + 1, false);
+              this.callbacks.move(index, index + (this.params.reversed ? 1 : -1), false);
             }),
             keepFocus: true
           },
@@ -78,7 +80,7 @@ export default class DraggablesList {
             label: this.params.dictionary.get('l10n.moveDown'),
             onClick: ((draggableElement) => {
               const index = this.getElementIndex(draggableElement);
-              this.callbacks.move(index, index - 1, false);
+              this.callbacks.move(index, index + (this.params.reversed ? -1 : 1), false);
             }),
             keepFocus: true
           },
@@ -86,7 +88,7 @@ export default class DraggablesList {
             id: 'remove',
             label: this.params.dictionary.get('l10n.remove'),
             onClick: ((draggableElement) => {
-              this.callbacks.remove(draggableElement.getId(), -1);
+              this.callbacks.remove(draggableElement.getId());
             }),
             keepFocus: true
           }
@@ -178,7 +180,7 @@ export default class DraggablesList {
 
     this.draggableElements.push(draggableElement);
 
-    if (params.prepend) {
+    if (this.params.reversed) {
       this.draggablesWrapper.prepend(draggableElement.getDOM());
     }
     else {
@@ -375,10 +377,18 @@ export default class DraggablesList {
    * @returns {object} Capabilities.
    */
   getCapabilities(element) {
+    const canMoveUp = this.params.reversed ?
+      element !== this.draggableElements[this.draggableElements.length - 1] :
+      element !== this.draggableElements[0];
+
+    const canMoveDown = this.params.reversed ?
+      element !== this.draggableElements[0] :
+      element !== this.draggableElements[this.draggableElements.length - 1];
+
     return {
       'edit': true,
-      'move-up': this.draggableElements[this.draggableElements.length - 1] !== element,
-      'move-down': this.draggableElements[0] !== element,
+      'move-up': canMoveUp,
+      'move-down': canMoveDown,
       'remove': true,
     };
   }

@@ -22,6 +22,14 @@ export default class Animation {
   }
 
   /**
+   * Get children.
+   * @returns {object} Children.
+   */
+  getChildren() {
+    return this.children;
+  }
+
+  /**
    * Get id.
    * @returns {number} Id.
    */
