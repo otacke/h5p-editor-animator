@@ -61,6 +61,14 @@ export default class Animation {
   }
 
   /**
+   * Get subContentId of element that the animation is attached to.
+   * @returns {string} SubContentId.
+   */
+  getSubContentId() {
+    return this.params.params.subContentId;
+  }
+
+  /**
    * Update parameters. Assuming all properties to use percentage.
    * @param {object} [params] Parameters.
    */

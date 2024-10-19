@@ -223,6 +223,9 @@ export default class Board {
         addButtonLabel: this.params.dictionary.get('a11y.addAnimation'),
       },
       {
+        highlight: (index, state) => {
+          this.toggleHighlightElement(this.animations[index].getSubContentId(), state, index);
+        },
         move: (sourceIndex, moveOffset) => {
           // this.changeAnimationOrder(sourceIndex, moveOffset);
         },
@@ -459,10 +462,17 @@ export default class Board {
     this.animations.push(animation);
 
     const element = this.getElementBySubContentId(params.subContentId);
+    const details = [
+      this.params.dictionary.get(`l10n.animation.${params.effect}`),
+      this.params.dictionary.get(`l10n.animation.${params.startWith}`),
+      `${params.duration}s`
+    ].join(' \u00b7 ');
+
+    console.log('animation', animation.getId());
 
     this.listAnimations.add({
       title: element.getTitle(),
-      details: `${params.effect} \u00b7 ${params.startWith} \u00b7 ${params.duration}s`,
+      details: details,
       id: animation.getId()
     });
 
@@ -672,11 +682,17 @@ export default class Board {
 
         const element = this.getElementBySubContentId(params.subContentId);
 
+        const details = [
+          this.params.dictionary.get(`l10n.animation.${params.effect}`),
+          this.params.dictionary.get(`l10n.animation.${params.startWith}`),
+          `${params.duration}s`
+        ].join(' \u00b7 ');
+
         this.listAnimations.update(
           animation.getId(),
           {
             title: element.getTitle(),
-            details: `${params.effect} \u00b7 ${params.startWith} \u00b7 ${params.duration}s`,
+            details: details,
           }
         );
 
@@ -738,8 +754,9 @@ export default class Board {
    * Toggle highlight of element.
    * @param {string} subContentId Subcontent ID.
    * @param {boolean} state True to highlight, false to remove highlight.
+   * @param {number} id Animation ID.
    */
-  toggleHighlightElement(subContentId, state) {
+  toggleHighlightElement(subContentId, state, id) {
     const element = this.getElementBySubContentId(subContentId);
     if (!element) {
       return;
@@ -750,6 +767,9 @@ export default class Board {
     }
 
     this.listElements.toggleHighlightElement(subContentId, state);
+    if (typeof id === 'number') {
+      this.listAnimations.toggleHighlightElement(id, state);
+    }
   }
 
   /**
@@ -767,6 +787,7 @@ export default class Board {
    */
   handleDocumentMouseDown(event) {
     this.listElements.handleDocumentMouseDown(event);
+    this.listAnimations.handleDocumentMouseDown(event);
 
     const dnbFocusTimeout = 100; // TODO: DnB requires some time before it updates the focus, find a better way
     window.setTimeout(() => {

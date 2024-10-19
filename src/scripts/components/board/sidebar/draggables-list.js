@@ -153,8 +153,8 @@ export default class DraggablesList {
         dictionary: this.params.dictionary,
       },
       {
-        onMouseDown: (subContentId, state) => {
-          this.callbacks.highlight(subContentId, state);
+        onMouseDown: (id, state) => {
+          this.callbacks.highlight(id, state);
         },
         onDragStart: (element) => {
           this.handleDragStart(element);
@@ -173,6 +173,7 @@ export default class DraggablesList {
         }
       }
     );
+
     draggableElement.setParams(params);
 
     this.draggableElements.push(draggableElement);
@@ -210,7 +211,7 @@ export default class DraggablesList {
     let draggableElement = this.draggableElements.find((element) => element.getId() === undefined);
     draggableElement = draggableElement ?? this.getById(id);
 
-    draggableElement?.setParams({ title: params.title, details: params.details, id: params.id });
+    draggableElement?.setParams(params);
   }
 
   /**
