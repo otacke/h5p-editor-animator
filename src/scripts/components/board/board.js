@@ -227,8 +227,8 @@ export default class Board {
           const animation = this.animations.find((animation) => animation.getId() === id);
           this.toggleHighlightElement(animation.getSubContentId(), state, id);
         },
-        move: (sourceIndex, moveOffset) => {
-          this.changeAnimationOrder(sourceIndex, moveOffset);
+        move: (sourceIndex, moveOffset, active) => {
+          this.changeAnimationOrder(sourceIndex, moveOffset, active);
         },
         edit: (id) => {
           this.editAnimation(id);
@@ -832,8 +832,13 @@ export default class Board {
    * @param {MouseEvent} event Mouse event.
    */
   handleDocumentMouseDown(event) {
-    this.listElements.handleDocumentMouseDown(event);
+    if (event.target !== this.sidebar.getDOM() && !this.sidebar.getDOM().contains(event.target)) {
+      this.listAnimations.toggleHighlightElement(null, false);
+      this.listElements.toggleHighlightElement(null, false);
+    }
+
     this.listAnimations.handleDocumentMouseDown(event);
+    this.listElements.handleDocumentMouseDown(event);
 
     const dnbFocusTimeout = 100; // TODO: DnB requires some time before it updates the focus, find a better way
     window.setTimeout(() => {

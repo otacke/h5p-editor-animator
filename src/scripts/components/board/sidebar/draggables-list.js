@@ -240,8 +240,9 @@ export default class DraggablesList {
    * @param {boolean} state True to set highlight, false to remove highlight.
    */
   toggleHighlightElement(id, state) {
-    const draggableElement = this.getById(id);
-    draggableElement?.toggleHighlight(state);
+    this.draggableElements.forEach((draggableElement) => {
+      draggableElement.toggleHighlight(state && draggableElement.getId() === id);
+    });
   }
 
   /**
@@ -249,10 +250,6 @@ export default class DraggablesList {
    * @param {MouseEvent} event Mouse event.
    */
   handleDocumentMouseDown(event) {
-    this.draggableElements.forEach((draggableElement) => {
-      draggableElement.handleDocumentMouseDown(event);
-    });
-
     if (!this.subMenu.isOpen) {
       return;
     }

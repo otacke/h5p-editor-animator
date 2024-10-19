@@ -197,6 +197,7 @@ export default class DraggableElement {
    * @param {boolean} state If true, highlight element, else remove highlight.
    */
   toggleHighlight(state) {
+    this.wasTrue = this.wasTrue || state;
     this.dom.classList.toggle('highlighted', state);
   }
 
@@ -212,18 +213,6 @@ export default class DraggableElement {
     };
 
     this.callbacks.onMouseDown(this.getId(), true);
-  }
-
-  /**
-   * Handle document mouse down.
-   * @param {MouseEvent} event Mouse event.
-   */
-  handleDocumentMouseDown(event) {
-    if (event.target === this.dom || this.dom.contains(event.target)) {
-      return; // Clicked on draggable element
-    }
-
-    this.callbacks.onMouseDown(this.getId(), false);
   }
 
   /**
