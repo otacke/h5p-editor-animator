@@ -189,10 +189,10 @@ export default class Board {
       }
     });
 
-    const mainArea = document.createElement('div');
-    mainArea.classList.add('h5p-editor-animator-board-main-area');
-    mainArea.append(this.elementArea.getDOM());
-    this.dom.append(mainArea);
+    this.mainArea = document.createElement('div');
+    this.mainArea.classList.add('h5p-editor-animator-board-main-area');
+    this.mainArea.append(this.elementArea.getDOM());
+    this.dom.append(this.mainArea);
 
     this.listElements = new DraggablesList(
       {
@@ -238,7 +238,7 @@ export default class Board {
     this.sidebar = new Sidebar({
       subComponents: [this.listElements, this.listAnimations]
     }, {});
-    mainArea.append(this.sidebar.getDOM());
+    this.mainArea.append(this.sidebar.getDOM());
 
     this.dom.appendChild(this.dialog.getDOM());
 
@@ -267,8 +267,15 @@ export default class Board {
 
   /**
    * Resize board.
+   * @param {object} [params] Parameters.
+   * @param {number} [params.baseWidth] Base width in px.
    */
-  resize() {
+  resize(params = {}) {
+    if (params.baseWidth && params.baseFontSize) {
+      const baseFontFactor = this.mainArea.getBoundingClientRect().width / params.baseWidth || 1;
+      this.mainArea.style.setProperty('--baseFontSize', `${params.baseFontSize * baseFontFactor}px`);
+    }
+
     window.clearTimeout(this.pinWrapperTimeout);
     this.pinWrapperTimeout = window.requestAnimationFrame(() => {
       this.dom.style.setProperty('--boardMaxHeight', `${this.elementArea.getSize().height}px`);

@@ -8,6 +8,12 @@ import '@styles/h5peditor-animator.scss';
 /** @constant {string} DEFAULT_ASPECT_RATIO Default aspect ratio. */
 const DEFAULT_ASPECT_RATIO = '16/9';
 
+/** @constant {number} BASE_WIDTH_PX Base width for font size computation. */
+const BASE_WIDTH_PX = 640;
+
+/** @constant {number} BASE_FONT_SIZE_PX Base font size. */
+const BASE_FONT_SIZE_PX = 16;
+
 /** Class for Animator H5P widget */
 export default class Animator extends H5P.EventDispatcher {
 
@@ -65,7 +71,7 @@ export default class Animator extends H5P.EventDispatcher {
     });
 
     window.addEventListener('resize', () => {
-      this.board?.resize();
+      this.board?.resize({ baseWidth: BASE_WIDTH_PX, baseFontSize: BASE_FONT_SIZE_PX });
       this.trigger('resize');
     });
 
