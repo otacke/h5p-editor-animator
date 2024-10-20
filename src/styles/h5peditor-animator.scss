@@ -17,7 +17,7 @@
   --color-hint-message-text: #874e12;
 
   // Primary color with common gradients
-  --color-primary: #1a73d9;
+  --color-primary: rgb(26, 115, 217);
   --color-primary-5: rgb(26 115 217 / 5%);
   --color-primary-10: rgb(26 115 217 / 10%);
   --color-primary-15: rgb(26 115 217 / 15%);
@@ -30,11 +30,12 @@
   --color-primary-95: rgb(26 115 217 / 95%);
 
   // Commonly used by H5P Group
-  --color-joubelui-button: #1a73d9;
-  --color-joubelui-button-hover: #1356a3;
-  --color-joubelui-button-active: #104888;
+  --color-joubelui-button: rgb(26, 115, 217);
+  --color-joubelui-button-hover: rgb(19, 86, 163);
+  --color-joubelui-button-active: rgb(16, 72, 136);
 
-  --color-toolbar-button: #277bdb;
+  --color-incorrect: rgb(183, 28, 28);
+  --color-incorrect-80: rgb(183 28 28 / 80%);
 
   // Icons
   --icon-fontawesome-image: "\f03e";

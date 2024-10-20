@@ -1,6 +1,5 @@
 import Util from '@services/util.js';
 import DragNBarWrapper from '@models/drag-n-bar-wrapper.js';
-import Dialog from '@components/dialog/dialog.js';
 import ElementArea from './element-area/element-area.js';
 import { ZOOM_LEVEL_MAX } from './element-area/element-area.js';
 import Animation from '@models/animation.js';
@@ -44,8 +43,6 @@ export default class Board {
         }
       }
     );
-
-    this.dialog = new Dialog({ dictionary: this.params.dictionary });
 
     this.dnb = new DragNBarWrapper(
       {
@@ -243,8 +240,6 @@ export default class Board {
       subComponents: [this.listElements, this.listAnimations]
     }, {});
     this.mainArea.append(this.sidebar.getDOM());
-
-    this.dom.appendChild(this.dialog.getDOM());
 
     this.params.elements.forEach((elementParams) => {
       this.createElement(elementParams);
@@ -649,33 +644,24 @@ export default class Board {
    * @param {Element} element Map element to be edited.
    */
   editElement(element) {
-    this.hide();
-
-    this.dialog.showForm({
+    this.callbacks.showFormDialog({
+      headline: this.params.dictionary.get('l10n.editElement'),
       form: element.getData().form,
+      children: element.getData().children,
       returnFocusTo: document.activeElement,
-      doneCallback: () => {
-        const isValid = this.validateFormChildren(element.getData().form, element.getData().children);
+      onDone: () => {
+        const subContentId = element.getSubContentId();
+        const elementParams = this.params.elements.find(
+          (element) => element.contentType.subContentId === subContentId
+        );
+        element.updateParams(elementParams);
 
-        if (isValid) {
-          this.show();
-
-          const subContentId = element.getSubContentId();
-          const elementParams = this.params.elements.find(
-            (element) => element.contentType.subContentId === subContentId
-          );
-          element.updateParams(elementParams);
-
-          this.listElements.update(element.getSubContentId(), {
-            title: element.getTitle(),
-            id: element.getSubContentId()
-          });
-        }
-
-        return isValid;
+        this.listElements.update(element.getSubContentId(), {
+          title: element.getTitle(),
+          id: element.getSubContentId()
+        });
       },
-      removeCallback: () => {
-        this.show();
+      onRemoved: () => {
         this.removeElementIfConfirmed(element);
       }
     });
@@ -705,43 +691,39 @@ export default class Board {
       return;
     }
 
-    this.hide();
-
-    this.dialog.showForm({
+    this.callbacks.showFormDialog({
+      headline: this.params.dictionary.get('l10n.editAnimation'),
       form: animation.getForm(),
+      children: animation.getChildren(),
       returnFocusTo: document.activeElement,
-      doneCallback: () => {
-        const isValid = this.validateFormChildren(animation.getForm(), animation.getChildren());
+      onDone: () => {
+        const params = animation.getParams();
+        animation.updateParams(params);
 
-        if (isValid) {
-          this.show();
-          const params = animation.getParams();
-          animation.updateParams(params);
+        const element = this.getElementBySubContentId(params.subContentId);
 
-          const element = this.getElementBySubContentId(params.subContentId);
+        const details = [
+          this.params.dictionary.get(`l10n.animation.${params.effect}`),
+          this.params.dictionary.get(`l10n.animation.${params.startWith}`),
+          `${params.duration}s`
+        ].join(' \u00b7 ');
 
-          const details = [
-            this.params.dictionary.get(`l10n.animation.${params.effect}`),
-            this.params.dictionary.get(`l10n.animation.${params.startWith}`),
-            `${params.duration}s`
-          ].join(' \u00b7 ');
-
-          this.listAnimations.update(
-            animation.getId(),
-            {
-              title: element.getTitle(),
-              details: details,
-            }
-          );
-        }
-
-        return isValid;
+        this.listAnimations.update(
+          animation.getId(),
+          {
+            title: element.getTitle(),
+            details: details,
+          }
+        );
       },
-      removeCallback: () => {
-        this.show();
+      onRemoved: () => {
         this.removeAnimationIfConfirmed(id);
       }
     });
+
+    setTimeout(() => {
+      this.dnb.blurAll();
+    }, 0);
   }
 
   /**
@@ -762,38 +744,6 @@ export default class Board {
     this.toolbar.hide();
     this.elementArea.hide();
     this.sidebar.hide();
-  }
-
-  /**
-   * Validate form children.
-   * @param {object} form Form to be validated.
-   * @param {object} children Children to be validated.
-   * @returns {boolean} True if form is valid, else false.
-   */
-  validateFormChildren(form, children) {
-    /*
-     * `some` would be quicker than `every`, but all fields should display
-     * their validation message
-     */
-    return children.every((child) => {
-      // Accept incomplete subcontent, but not no subcontent
-      if (child instanceof H5PEditor.Library && !child.validate()) {
-        if (child.$select.get(0).value !== '-') {
-          return true; // Some subcontent is selected at least
-        }
-
-        const errors = form
-          .querySelector('.field.library .h5p-errors');
-
-        if (errors) {
-          errors.innerHTML = `<p>${this.params.dictionary.get('l10n.contentRequired')}</p>`;
-        }
-
-        return false;
-      }
-
-      return child.validate() ?? true; // Some widgets return `undefined` instead of true
-    });
   }
 
   /**

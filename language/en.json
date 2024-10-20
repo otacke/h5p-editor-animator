@@ -10,6 +10,8 @@
     "l10n.moveUp": "Move up",
     "l10n.moveDown": "Move down",
     "l10n.contentRequired": "You need to select a content type for this element.",
+    "l10n.editElement": "Edit element",
+    "l10n.editAnimation": "Edit animation",
     "l10n.confirmationDialogRemoveElementHeader": "Delete element",
     "l10n.confirmationDialogRemoveElementDialog": "Do you really want to delete this element and all attached animations?",
     "l10n.confirmationDialogRemoveElementCancel": "No",

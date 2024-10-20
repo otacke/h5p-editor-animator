@@ -1,7 +1,7 @@
 import Dictionary from '@services/dictionary.js';
 import Globals from '@services/globals.js';
 import Util from '@services/util.js';
-import Board from '@components/board/board.js';
+import Main from '@components/main.js';
 
 import '@styles/h5peditor-animator.scss';
 
@@ -42,9 +42,6 @@ export default class Animator extends H5P.EventDispatcher {
     this.globals.set('mainInstance', this);
     this.globals.set('contentId', H5PEditor.contentId || 1);
     this.globals.set('aspectRatio', this.retrieveAspectRatio(this.params.aspectRatio));
-    this.globals.set('getElementAreaSize', () => {
-      return this.board.getElementAreaSize();
-    });
     this.globals.set('resize', () => {
       this.trigger('resize');
     });
@@ -64,14 +61,14 @@ export default class Animator extends H5P.EventDispatcher {
     this.dom = this.buildDOM();
     this.$container = H5P.jQuery(this.dom); // TODO: Replace once H5P Group removes jQuery from H5P core
 
-    this.buildBoard();
+    this.buildMain();
 
     document.addEventListener('mousedown', (event) => {
-      this.board?.handleDocumentMouseDown(event);
+      this.main?.handleDocumentMouseDown(event);
     });
 
     window.addEventListener('resize', () => {
-      this.board?.resize({ baseWidth: BASE_WIDTH_PX, baseFontSize: BASE_FONT_SIZE_PX });
+      this.main?.resize({ baseWidth: BASE_WIDTH_PX, baseFontSize: BASE_FONT_SIZE_PX });
       this.trigger('resize');
     });
 
@@ -126,7 +123,7 @@ export default class Animator extends H5P.EventDispatcher {
    * @param {string} color Color as CSS unit.
    */
   setBackgroundColor(color) {
-    this.board?.setBackgroundColor(color);
+    this.main?.setBackgroundColor(color);
   }
 
   /**
@@ -136,11 +133,11 @@ export default class Animator extends H5P.EventDispatcher {
   setBackgroundImage(imageData) {
     const contentPath = imageData?.path;
     if (!contentPath) {
-      this.board?.setBackgroundImage(null);
+      this.main?.setBackgroundImage(null);
       return;
     }
 
-    this.board?.setBackgroundImage(H5P.getPath(contentPath, this.globals.get('contentId')));
+    this.main?.setBackgroundImage(H5P.getPath(contentPath, this.globals.get('contentId')));
   }
 
   /**
@@ -150,7 +147,7 @@ export default class Animator extends H5P.EventDispatcher {
   setAspectRatio(value) {
     const aspectRatio = this.retrieveAspectRatio(value);
     this.globals.set('aspectRatio', aspectRatio);
-    this.board?.setAspectRatio(aspectRatio);
+    this.main?.setAspectRatio(aspectRatio);
   }
 
   /**
@@ -183,9 +180,9 @@ export default class Animator extends H5P.EventDispatcher {
   }
 
   /**
-   * Build the board
+   * Build main component.
    */
-  async buildBoard() {
+  async buildMain() {
     // Create instance for elements group field
     const elementsGroup = this.field.fields.find((field) => field.name === 'elements').field;
     const elementsFields = H5P.cloneObject(elementsGroup.fields, true);
@@ -201,7 +198,7 @@ export default class Animator extends H5P.EventDispatcher {
       this, animationsGroup, this.params.animations, () => {} // No setValue needed
     ));
 
-    this.board = new Board(
+    this.main = new Main(
       {
         dictionary: this.dictionary,
         globals: this.globals,
@@ -217,7 +214,7 @@ export default class Animator extends H5P.EventDispatcher {
         }
       }
     );
-    this.dom.appendChild(this.board.getDOM());
+    this.dom.append(this.main.getDOM());
 
     this.initFieldHandlers();
   }
