@@ -130,6 +130,7 @@ export default class ToolbarGroup {
       const buttonId = (anchor.getAttribute('aria-label') ?? `button-${index}`).toLowerCase();
 
       this.buttons[buttonId] = new ToolbarDnbButtonWrapper({
+        a11yContentTypeWrapper: this.params.a11yContentTypeWrapper,
         id: buttonId,
         buttonDOM: anchor
       }, {
@@ -138,6 +139,7 @@ export default class ToolbarGroup {
         }
       });
     });
+
     this.dom.append(dnbDOM);
   }
 

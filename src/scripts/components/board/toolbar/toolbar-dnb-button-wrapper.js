@@ -10,6 +10,10 @@ export default class ToolbarDnbButtonWrapper {
     this.id = params.id;
     this.button = params.buttonDOM;
     this.button.setAttribute('role', 'button');
+    this.button.setAttribute(
+      'aria-label',
+      params.a11yContentTypeWrapper.replace('@type', this.button.getAttribute('aria-label'))
+    );
 
     this.button.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter' && event.key !== ' ') {

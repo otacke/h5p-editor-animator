@@ -85,6 +85,7 @@ export default class Board {
 
     const contentButtons = new ToolbarGroup(
       {
+        a11yContentTypeWrapper: this.params.dictionary.get('a11y.contentTypeWrapper'),
         dnbDOM: dnbWrapper,
         a11y: {
           toolbarLabel: this.params.dictionary.get('a11y.toolbarLabelContents')
@@ -108,8 +109,8 @@ export default class Board {
         tooltip: this.params.dictionary.get('l10n.toolbarButtonListView'),
         type: 'toggle',
         a11y: {
-          active: this.params.dictionary.get('a11y.buttonListViewInActive'),
-          inactive: this.params.dictionary.get('a11y.buttonListviewInInactive'),
+          active: this.params.dictionary.get('a11y.buttonListViewActive'),
+          inactive: this.params.dictionary.get('a11y.buttonListViewInactive'),
         },
         onClick: () => {
           this.toggleSidebar();
@@ -121,7 +122,7 @@ export default class Board {
         type: 'pulse',
         a11y: {
           active: this.params.dictionary.get('a11y.buttonZoomInActive'),
-          inactive: this.params.dictionary.get('a11y.buttonZoomInInactive'),
+          disabled: this.params.dictionary.get('a11y.buttonZoomInDisabled'),
         },
         keyshortcuts: KEY_SHORTCUTS_ZOOM_IN,
         onClick: () => {
@@ -134,7 +135,7 @@ export default class Board {
         type: 'pulse',
         a11y: {
           active: this.params.dictionary.get('a11y.buttonZoomOutActive'),
-          inactive: this.params.dictionary.get('a11y.buttonZoomOutInactive'),
+          disabled: this.params.dictionary.get('a11y.buttonZoomOutDisabled'),
         },
         keyshortcuts: KEY_SHORTCUTS_ZOOM_OUT,
         onClick: () => {
