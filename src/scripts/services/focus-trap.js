@@ -202,6 +202,11 @@ export default class FocusTrap {
     this.currentFocusElement.focus();
   }
 
+  /**
+   * Check whether element is visible.
+   * @param {HTMLElement} element Element to check.
+   * @returns {boolean} True, if element is visible, false otherwise.
+   */
   isElementVisible(element) {
     if (!element) {
       return false;
