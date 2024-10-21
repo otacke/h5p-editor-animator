@@ -43,9 +43,11 @@ export default class Board {
         }
       }
     );
-
     this.dnb = new DragNBarWrapper(
       {
+        dictionary: this.params.dictionary,
+        globals: this.params.globals,
+        subContentOptions: this.params.subContentOptions,
         buttons: this.params.subContentOptions.map((option) => this.createButton(option)),
         dialogContainer: this.elementArea.getDOM(),
         elementArea: this.elementArea.getElementArea(),
@@ -76,6 +78,9 @@ export default class Board {
             this.convertToPercent({ x: left }),
             this.convertToPercent({ y: top })
           );
+        },
+        createElement: (params) => {
+          return this.createElement(params);
         }
       }
     );
@@ -83,6 +88,7 @@ export default class Board {
     const dnbWrapper = document.createElement('div');
     this.dnb.attach(dnbWrapper);
 
+    // TODO: Shouldn't this be in the toolbar?
     const contentButtons = new ToolbarGroup(
       {
         a11yContentTypeWrapper: this.params.dictionary.get('a11y.contentTypeWrapper'),
@@ -529,18 +535,15 @@ export default class Board {
    * @param {Element} element Element to be removed.
    */
   removeElementIfConfirmed(element) {
-    this.deleteDialog = new H5P.ConfirmationDialog({
+    this.params.globals.get('showConfirmationDialog')({
       headerText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementHeader'),
       dialogText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementDialog'),
       cancelText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementCancel'),
-      confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementConfirm')
+      confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementConfirm'),
+      callbackConfirmed: () => {
+        this.removeElement(element);
+      }
     });
-    this.deleteDialog.on('confirmed', () => {
-      this.removeElement(element);
-    });
-
-    this.deleteDialog.appendTo(this.dom.closest('.h5peditor-animator'));
-    this.deleteDialog.show();
   }
 
   /**
@@ -548,18 +551,15 @@ export default class Board {
    * @param {string} id Id of the animation to be removed.
    */
   removeAnimationIfConfirmed(id) {
-    this.deleteDialog = new H5P.ConfirmationDialog({
+    this.params.globals.get('showConfirmationDialog')({
       headerText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationHeader'),
       dialogText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationDialog'),
       cancelText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationCancel'),
-      confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationConfirm')
+      confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationConfirm'),
+      callbackConfirmed: () => {
+        this.removeAnimation(id);
+      }
     });
-    this.deleteDialog.on('confirmed', () => {
-      this.removeAnimation(id);
-    });
-
-    this.deleteDialog.appendTo(this.dom.closest('.h5peditor-animator'));
-    this.deleteDialog.show();
   }
 
   /**

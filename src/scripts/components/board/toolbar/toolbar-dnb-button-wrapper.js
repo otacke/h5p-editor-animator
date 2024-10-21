@@ -10,10 +10,13 @@ export default class ToolbarDnbButtonWrapper {
     this.id = params.id;
     this.button = params.buttonDOM;
     this.button.setAttribute('role', 'button');
-    this.button.setAttribute(
-      'aria-label',
-      params.a11yContentTypeWrapper.replace('@type', this.button.getAttribute('aria-label'))
-    );
+    const ariaLabel = this.button.getAttribute('aria-label') ?? 'Paste'; // TODO: Needs translation
+    if (ariaLabel !== 'Paste') { // TODO: Needs translation
+      this.button.setAttribute('aria-label', params.a11yContentTypeWrapper.replace('@type', ariaLabel));
+    }
+    else {
+      this.button.setAttribute('aria-label', ariaLabel);
+    }
 
     this.button.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter' && event.key !== ' ') {
@@ -29,6 +32,10 @@ export default class ToolbarDnbButtonWrapper {
       // Focus the DNB element, otherwise keydown listener of group will still be in focus
       window.requestAnimationFrame(() => {
         const focusedElement = document.querySelector('.h5p-editor-animator-element.h5p-dragnbar-element.focused');
+        if (!focusedElement) {
+          return;
+        }
+
         focusedElement.focus();
         this.callbacks.onKeydown(focusedElement);
       });

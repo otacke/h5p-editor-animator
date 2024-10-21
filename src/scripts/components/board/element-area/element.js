@@ -28,11 +28,11 @@ export default class Element {
   constructor(params = {}, callbacks = {}) {
     params.elementParams = Util.extend({
       // eslint-disable-next-line no-magic-numbers
-      x: `${HORIZONTAL_CENTER - DEFAULT_SIZE_PERCENT.width / 2}`,
+      x: HORIZONTAL_CENTER - DEFAULT_SIZE_PERCENT.width / 2,
       // eslint-disable-next-line no-magic-numbers
-      y: `${VERTICAL_CENTER - DEFAULT_SIZE_PERCENT.height * 0.5 / 2}`,
-      width: `${DEFAULT_SIZE_PERCENT.width}`,
-      height: `${DEFAULT_SIZE_PERCENT.height}`,
+      y: VERTICAL_CENTER - DEFAULT_SIZE_PERCENT.height * 0.5 / 2,
+      width: DEFAULT_SIZE_PERCENT.width,
+      height: DEFAULT_SIZE_PERCENT.height,
     }, params.elementParams);
 
     this.params = Util.extend({
@@ -300,7 +300,11 @@ export default class Element {
       return this.callbacks.getPosition($element.get(0));
     };
 
-    this.dnbElement = this.params.dnb.add($element, '', options);
+    this.dnbElement = this.params.dnb.add(
+      $element,
+      H5P.DragNBar.clipboardify('H5PEditor.Animator', elementParams, 'contentType'),
+      options
+    );
 
     this.dnbElement.contextMenu.on('contextMenuEdit', () => {
       this.callbacks.onEdited(this);

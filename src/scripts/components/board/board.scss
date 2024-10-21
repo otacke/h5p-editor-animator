@@ -60,8 +60,19 @@
           padding: 0;
           position: relative;
 
+          &.disabled {
+            .h5p-dragnbar-a {
+              &.h5p-dragnbar-paste-button {
+                background-color: var(--color-disabled);
+                color: var(--color-text-light);
+                cursor: initial;
+              }
+            }
+          }
+
           .h5p-dragnbar-a {
             background-color: var(--color-primary-5);
+            background-image: none;
             border: 2px solid var(--color-background);
             border-radius: 3px;
             box-sizing: border-box;
@@ -112,6 +123,11 @@
 
             &.h5p-dragnbar-video-button::before {
               content: var(--icon-fontawesome-film);
+            }
+
+            &.h5p-dragnbar-paste-button::before {
+              content: var(--icon-fontawesome-paste);
+              font-weight: normal;
             }
           }
         }

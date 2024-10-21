@@ -42,6 +42,9 @@ export default class Animator extends H5P.EventDispatcher {
     this.globals.set('mainInstance', this);
     this.globals.set('contentId', H5PEditor.contentId || 1);
     this.globals.set('aspectRatio', this.retrieveAspectRatio(this.params.aspectRatio));
+    this.globals.set('showConfirmationDialog', (params) => {
+      this.showConfirmationDialog(params);
+    });
     this.globals.set('resize', () => {
       this.trigger('resize');
     });
@@ -219,8 +222,15 @@ export default class Animator extends H5P.EventDispatcher {
     this.initFieldHandlers();
   }
 
+  /**
+   * Get subcontent options from H5P library list cache.
+   * @async
+   * @returns {object[]} Subcontent options.
+   */
   async getSubcontentOptions() {
     const subContentOptions = await this.determineValidSubContentOptions();
+
+    // For sorting in the toolbar
     const subContentPriorities = {
       'H5P.AdvancedText': 0,
       'H5P.Image': 1,
@@ -241,6 +251,11 @@ export default class Animator extends H5P.EventDispatcher {
     });
   }
 
+  /**
+   * Determine valid subcontent options.
+   * @async
+   * @returns {object[]} Valid subcontent options.
+   */
   async determineValidSubContentOptions() {
     const contentTypeField = H5PEditor.findSemanticsField('contentType', this.field);
     const subContentOptions = contentTypeField?.options ?? [];
@@ -350,5 +365,28 @@ export default class Animator extends H5P.EventDispatcher {
     }
 
     this.setValue(this.field, this.params);
+  }
+
+  /**
+   * Show confirmation dialog.
+   * @param {object} [params] Parameters.
+   */
+  showConfirmationDialog(params = {}) {
+    const confirmationDialog = new H5P.ConfirmationDialog({
+      headerText: params.headerText,
+      dialogText: params.dialogText,
+      cancelText: params.cancelText,
+      confirmText: params.confirmText,
+      hideCancel: !params.cancelText,
+    });
+    confirmationDialog.on('confirmed', () => {
+      params.callbackConfirmed?.();
+    });
+    confirmationDialog.on('canceled', () => {
+      params.callbackCanceled?.();
+    });
+
+    confirmationDialog.appendTo(this.dom);
+    confirmationDialog.show();
   }
 }

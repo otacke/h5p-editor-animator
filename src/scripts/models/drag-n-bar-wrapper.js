@@ -1,9 +1,13 @@
 import Util from '@services/util.js';
 
+/** @constant {string} MAIN_MACHINENAME Content type main machine name. */
+const MAIN_MACHINENAME = 'H5PEditor.Animator';
+
 export default class DragNBarWrapper {
 
   constructor(params = {}, callbacks = {}) {
     this.params = Util.extend({
+      subContentOptions: [],
       buttons: []
     }, params);
 
@@ -11,14 +15,15 @@ export default class DragNBarWrapper {
       onStoppedMoving: () => {},
       onReleased: () => {},
       onMoved: () => {},
-      onResized: () => {}
+      onResized: () => {},
+      createElement: () => {}
     }, callbacks);
 
     this.dnb = new H5P.DragNBar(
       this.params.buttons,
       H5P.jQuery(this.params.elementArea),
       H5P.jQuery(this.params.dialogContainer),
-      { enableCopyPaste: false } // TODO: Enable copy paste as future feature
+      { enableCopyPaste: true }
     );
 
     this.dnb.stopMovingCallback = (x, y) => {
@@ -56,6 +61,19 @@ export default class DragNBarWrapper {
         parseFloat($element.css('height')),
       );
     });
+
+    // Listen for H5P content being copied to clipboard
+    H5P.externalDispatcher.on('datainclipboard', (event) => {
+      if (!this.params.subContentOptions.length || event.data?.reset) {
+        return;
+      }
+
+      this.updatePasteButton();
+    });
+
+    this.dnb.on('paste', (event) => {
+      this.handlePaste(event.data);
+    });
   }
 
   /**
@@ -64,6 +82,7 @@ export default class DragNBarWrapper {
    */
   attach(dom) {
     this.dnb.attach(H5P.jQuery(dom));
+    this.updatePasteButton();
   }
 
   /**
@@ -117,5 +136,80 @@ export default class DragNBarWrapper {
    */
   updateCoordinates() {
     this.dnb.updateCoordinates();
+  }
+
+  /**
+   * Update paste button.
+   */
+  updatePasteButton() {
+    this.dnb.setCanPaste(this.canPaste(H5P.getClipboard()));
+  }
+
+  /**
+   * Determine whether the content can be pasted.
+   * @param {object} clipboard Clipboard content (usually from H5P.getClipboard()).
+   * @returns {boolean} True if content can be pasted, else false.
+   */
+  canPaste(clipboard) {
+    if (!clipboard) {
+      return false;
+    }
+
+    const isSubContentSupported = this.isSubContentSupported(clipboard.generic?.library);
+
+    if (clipboard.from === MAIN_MACHINENAME && (!clipboard.generic || isSubContentSupported)) {
+      return true; // Content comes from the same version of compound content type
+    }
+    else if (clipboard.generic && isSubContentSupported) {
+      return true; // Supported library from another content type
+    }
+
+    return false;
+  };
+
+  /**
+   * Determine whether subcontent library is supported.
+   * @param {string} uberName Uber name of content type library.
+   * @returns {boolean} True if supported, else false.
+   */
+  isSubContentSupported(uberName) {
+    return !!this.params.subContentOptions.find((option) => option.uberName === uberName);
+  };
+
+  /**
+   * Handle pasted from clipboard and create new element if possible.
+   * @param {object} pasted Pasted content.
+   */
+  handlePaste(pasted = {}) {
+    if (!pasted.generic || !this.isSubContentSupported(pasted.generic.library)) {
+      this.params.globals.get('showConfirmationDialog')({
+        headerText: H5PEditor.t('core', 'pasteError'),
+        dialogText: H5PEditor.t('H5P.DragNBar', 'unableToPaste'),
+        confirmText: this.params.dictionary.get('l10n.ok')
+      });
+
+      return; // Unsupported library
+    }
+
+    let $element;
+    if (pasted.from === MAIN_MACHINENAME) {
+      $element = this.callbacks.createElement(pasted.specific);
+    }
+    else {
+      const elementAreaRect = this.params.elementArea.getBoundingClientRect();
+
+      $element = this.callbacks.createElement({
+        contentType: pasted.generic,
+        generic: 'contentType',
+        // eslint-disable-next-line no-magic-numbers
+        width: Math.min(pasted.width, 100),
+        // eslint-disable-next-line no-magic-numbers
+        height: Math.min(pasted.height * elementAreaRect.width / elementAreaRect.height, 100),
+      });
+    }
+
+    window.requestAnimationFrame(() => {
+      this.dnb.focus($element);
+    });
   }
 }
