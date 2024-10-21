@@ -235,7 +235,7 @@ export default class Animator extends H5P.EventDispatcher {
             },
             behaviour: {
               aspectRatio: this.globals.get('aspectRatio'),
-              hideControls: false //TODO: this.hideControlsFieldInstance?.value
+              hideControls: this.hideControlsFieldInstance?.value
             },
             editor: {
               elements: this.params.elements,

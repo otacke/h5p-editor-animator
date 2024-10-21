@@ -10,9 +10,13 @@ export default class PreviewOverlay {
   /**
    * @class
    * @param {object} [params] Parameters.
+   * @param {object} [callbacks] Callbacks.
    */
-  constructor(params) {
+  constructor(params = {}, callbacks = {}) {
     this.params = params || {};
+    this.callbacks = callbacks || {
+      onDone: () => {}
+    };
 
     this.dom = document.createElement('div');
     this.dom.classList.add('preview-overlay');
@@ -39,6 +43,19 @@ export default class PreviewOverlay {
 
     this.preview = new Preview();
     this.previewWrapper.appendChild(this.preview.getDOM());
+
+    const buttons = document.createElement('div');
+    buttons.classList.add('h5p-editor-animator-dialog-buttons');
+
+    const buttonDone = document.createElement('button');
+    buttonDone.classList.add('h5p-editor-animator-dialog-button');
+    buttonDone.classList.add('h5p-editor-done');
+    buttonDone.innerText = this.params.dictionary.get('l10n.done');
+    buttonDone.addEventListener('click', () => {
+      this.callbacks.onDone();
+    });
+    buttons.append(buttonDone);
+    previewContent.append(buttons);
   }
 
   /**

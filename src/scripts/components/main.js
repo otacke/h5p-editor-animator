@@ -28,7 +28,7 @@ export default class Main {
           this.dialog.showForm(params);
         },
         togglePreview: () => {
-          this.togglePreview({ active: true });
+          this.openPreview();
         }
       }
     );
@@ -37,9 +37,16 @@ export default class Main {
     this.dialog = new Dialog({ dictionary: this.params.dictionary });
     this.dom.appendChild(this.dialog.getDOM());
 
-    this.previewOverlay = new PreviewOverlay({
-      dictionary: this.params.dictionary
-    });
+    this.previewOverlay = new PreviewOverlay(
+      {
+        dictionary: this.params.dictionary
+      },
+      {
+        onDone: () => {
+          this.closePreview();
+        }
+      }
+    );
     this.dom.append(this.previewOverlay.getDOM());
   }
 
@@ -80,30 +87,9 @@ export default class Main {
   }
 
   /**
-   * Toggle preview.
-   * @param {object} [params] Parameters
-   * @param {boolean} params.active If true, show preview, else hide.
-   * @param {boolean} params.cloaked If true, show preview invisble.
-   */
-  togglePreview(params = {}) {
-    if (typeof params.active !== 'boolean') {
-      return;
-    }
-
-    if (params.active) {
-      this.openPreview();
-    }
-    else {
-      this.closePreview();
-    }
-  }
-
-  /**
    * Open preview.
    */
   openPreview() {
-    this.board.hide();
-
     this.createPreviewInstance();
     if (!this.previewInstance) {
       return;
@@ -119,12 +105,9 @@ export default class Main {
    * Close preview.
    */
   closePreview() {
-    this.board.show();
     this.previewInstance = null;
     this.previewOverlay.decloak();
     this.previewOverlay.hide();
-    this.chapterNavigation.show();
-    this.chaptersDOM.classList.remove('display-none');
 
     Readspeaker.read(this.params.dictionary.get('a11y.previewClosed'));
   }

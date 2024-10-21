@@ -54,7 +54,7 @@ export default class Dialog {
     buttonDone.addEventListener('click', () => {
       this.handleDone();
     });
-    buttons.appendChild(buttonDone);
+    buttons.append(buttonDone);
 
     const buttonRemove = document.createElement('button');
     buttonRemove.classList.add('h5p-editor-animator-dialog-button');
@@ -63,10 +63,10 @@ export default class Dialog {
     buttonRemove.addEventListener('click', () => {
       this.handleRemove();
     });
-    buttons.appendChild(buttonRemove);
+    buttons.append(buttonRemove);
 
-    content.appendChild(this.dialogInner);
-    content.appendChild(buttons);
+    content.append(this.dialogInner);
+    content.append(buttons);
 
     this.focusTrap = new FocusTrap({
       trapElement: this.dom,

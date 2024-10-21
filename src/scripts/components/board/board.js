@@ -157,6 +157,7 @@ export default class Board {
           active: this.params.dictionary.get('a11y.buttonPreview'),
         },
         onClick: () => {
+          this.dnb.blurAll();
           this.callbacks.togglePreview();
         }
       }
