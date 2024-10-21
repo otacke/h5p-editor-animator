@@ -101,11 +101,19 @@ export default class Animator extends H5P.EventDispatcher {
       });
     }
 
+    if (!this.audioFieldInstance) {
+      this.audioFieldInstance = this.audioFieldInstance ?? H5PEditor.findField('audio/audio', this.parent);
+    }
+
     if (!this.aspectRatioFieldInstance) {
       this.aspectRatioFieldInstance = H5PEditor.findField('behaviour/aspectRatio', this.parent);
       this.aspectRatioFieldInstance?.change(() => {
         this.setAspectRatio(this.aspectRatioFieldInstance.value);
       });
+    }
+
+    if (!this.hideControlsFieldInstance) {
+      this.hideControlsFieldInstance = H5PEditor.findField('behaviour/hideControls', this.parent);
     }
 
     if (this.aspectRatioFieldInstance) {
@@ -214,6 +222,26 @@ export default class Animator extends H5P.EventDispatcher {
       {
         onChanged: (values) => {
           this.setValues(values);
+        },
+        getPreviewParams: () => {
+          return ({
+            a11y: this.parent.commonFields[this.getUberName()].a11y.params,
+            audio: {
+              audio: this.audioFieldInstance?.params
+            },
+            background: {
+              backgroundColor: this.backgroundColorFieldInstance?.getColor(),
+              backgroundImage: this.backgroundImageFieldInstance?.params
+            },
+            behaviour: {
+              aspectRatio: this.globals.get('aspectRatio'),
+              hideControls: false //TODO: this.hideControlsFieldInstance?.value
+            },
+            editor: {
+              elements: this.params.elements,
+              animations: this.params.animations
+            }
+          });
         }
       }
     );
@@ -353,6 +381,16 @@ export default class Animator extends H5P.EventDispatcher {
     }
 
     this.dictionary.fill(translations);
+  }
+
+  /**
+   * Get uber name of Animator library.
+   * @returns {string} Uber name of Animator library.
+   */
+  getUberName() {
+    return Object.keys(
+      H5PEditor.libraryLoaded).find((library) => library.split(' ')[0] === 'H5P.Animator'
+    );
   }
 
   /**

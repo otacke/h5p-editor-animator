@@ -26,7 +26,8 @@ export default class Board {
     }, params);
 
     this.callbacks = Util.extend({
-      onChanged: () => {}
+      onChanged: () => {},
+      togglePreview: () => {}
     }, callbacks);
 
     this.elements = [];
@@ -156,7 +157,7 @@ export default class Board {
           active: this.params.dictionary.get('a11y.buttonPreview'),
         },
         onClick: () => {
-          // TODO: Implement preview
+          this.callbacks.togglePreview();
         }
       }
     ];

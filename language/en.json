@@ -21,6 +21,8 @@
     "l10n.confirmationDialogRemoveAnimationCancel": "No",
     "l10n.confirmationDialogRemoveAnimationConfirm": "Yes, delete!",
     "l10n.ok": "OK",
+    "l10n.preview": "Preview Mode",
+    "l10n.previewExplanation": "This is how the user will see your content",
     "l10n.toolbarButtonListView": "Toggle list view",
     "l10n.toolbarButtonZoomIn": "Zoom in",
     "l10n.toolbarButtonZoomOut": "Zoom out",
@@ -61,6 +63,8 @@
     "a11y.buttonPreview": "Preview animation",
     "a11y.addAnimation": "Add animation",
     "a11y.openSubMenu": "Open submenu",
-    "a11y.closeSubMenu": "Close submenu"
+    "a11y.closeSubMenu": "Close submenu",
+    "a11y.previewOpened": "Preview was opened.",
+    "a11y.previewClosed": "Preview was closed."
   }
 }

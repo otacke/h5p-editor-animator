@@ -22,6 +22,11 @@
   ],
   "preloadedDependencies": [
     {
+      "machineName": "H5P.Animator",
+      "majorVersion": 1,
+      "minorVersion": 0
+    },
+    {
       "machineName": "FontAwesome",
       "majorVersion": 4,
       "minorVersion": 5
