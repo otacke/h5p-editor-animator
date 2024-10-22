@@ -22,6 +22,18 @@ export default class Main {
       this.params,
       {
         onChanged: (values) => {
+          // Safety net
+          if (values.elements) {
+            values.elements = values.elements.map((element) => {
+              element.x = `${element.x}`;
+              element.y = `${element.y}`;
+              element.width = `${element.width}`;
+              element.height = `${element.height}`;
+
+              return element;
+            });
+          }
+
           this.callbacks.onChanged(values);
         },
         showFormDialog: (params) => {
