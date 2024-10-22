@@ -285,7 +285,10 @@ export default class Board {
   resize(params = {}) {
     if (params.baseWidth && params.baseFontSize) {
       const baseFontFactor = this.mainArea.getBoundingClientRect().width / params.baseWidth || 1;
-      this.mainArea.style.setProperty('--baseFontSize', `${params.baseFontSize * baseFontFactor}px`);
+      const baseFontSize = params.baseFontSize * baseFontFactor;
+      this.mainArea.style.setProperty('--baseFontSize', `${baseFontSize}px`);
+
+      this.dnb.setContainerEm(baseFontSize);
     }
 
     window.clearTimeout(this.pinWrapperTimeout);
