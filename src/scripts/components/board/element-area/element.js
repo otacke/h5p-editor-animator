@@ -246,7 +246,7 @@ export default class Element {
       this.params.elementParams.contentType;
     }
 
-    this.params.elementParams = this.fitIntoArea(this.params.elementParams);
+    this.fitIntoArea(this.params.elementParams);
 
     this.dom.style.left = `${this.params.elementParams.x}%`;
     this.dom.style.top = `${this.params.elementParams.y}%`;
@@ -435,8 +435,6 @@ export default class Element {
       // eslint-disable-next-line no-magic-numbers
       telemetry.y = 100 - telemetry.height;
     }
-
-    return telemetry;
   }
 
   /**
