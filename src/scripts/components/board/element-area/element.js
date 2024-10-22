@@ -33,6 +33,7 @@ export default class Element {
       y: VERTICAL_CENTER - DEFAULT_SIZE_PERCENT.height * 0.5 / 2,
       width: DEFAULT_SIZE_PERCENT.width,
       height: DEFAULT_SIZE_PERCENT.height,
+      hidden: false,
     }, params.elementParams);
 
     this.params = Util.extend({
@@ -270,9 +271,15 @@ export default class Element {
       this.params.elementParams.contentType;
     }
 
+    console.log(params.hidden);
+
     const newHiddenState = (typeof params.hidden === 'boolean') ? params.hidden : !this.params.elementParams.hidden;
     if ((typeof params.hidden === 'boolean') | (newHiddenState !== this.params.elementParams.hidden)) {
       this.params.elementParams.hidden = newHiddenState;
+
+      console.log('toggle', newHiddenState);
+
+
       this.dom.classList.toggle('display-none', newHiddenState);
       this.dnbElement?.blur();
     }
