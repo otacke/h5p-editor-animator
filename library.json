@@ -60,6 +60,11 @@
       "machineName": "H5P.DragNBar",
       "majorVersion": 1,
       "minorVersion": 5
+    },
+    {
+      "machineName": "H5PEditor.RadioGroup",
+      "majorVersion": 1,
+      "minorVersion": 0
     }
   ]
 }
