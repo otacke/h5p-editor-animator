@@ -118,6 +118,8 @@ export default class Dialog {
     this.dialogInner.appendChild(params.form);
     this.show();
     this.focusTrap.activate();
+
+    this.params.globals.get('resize')();
   }
 
   /**
@@ -131,6 +133,8 @@ export default class Dialog {
     if (this.returnFocusTo) {
       this.returnFocusTo.focus();
     }
+
+    this.params.globals.get('resize')();
   }
 
   /**

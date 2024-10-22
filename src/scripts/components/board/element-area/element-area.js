@@ -174,6 +174,14 @@ export default class ElementArea {
   }
 
   /**
+   * Set base font size.
+   * @param {number} fontSize Font size.
+   */
+  setBaseFontSize(fontSize) {
+    this.dom.style.setProperty('--baseFontSize', `${fontSize}px`);
+  }
+
+  /**
    * Get board size.
    * @returns {object} Height and width of board.
    */

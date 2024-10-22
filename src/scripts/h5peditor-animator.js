@@ -71,8 +71,7 @@ export default class Animator extends H5P.EventDispatcher {
     });
 
     window.addEventListener('resize', () => {
-      this.main?.resize({ baseWidth: BASE_WIDTH_PX, baseFontSize: BASE_FONT_SIZE_PX });
-      this.trigger('resize');
+      this.main?.resize();
     });
 
     this.parent.ready(() => {
@@ -217,7 +216,9 @@ export default class Animator extends H5P.EventDispatcher {
         elementsFields: elementsFields,
         animations: this.params.animations,
         animationsFields: animationsFields,
-        subContentOptions: await this.getSubcontentOptions()
+        subContentOptions: await this.getSubcontentOptions(),
+        baseWidth: BASE_WIDTH_PX,
+        baseFontSize: BASE_FONT_SIZE_PX
       },
       {
         onChanged: (values) => {

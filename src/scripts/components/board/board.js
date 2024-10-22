@@ -279,23 +279,24 @@ export default class Board {
 
   /**
    * Resize board.
-   * @param {object} [params] Parameters.
-   * @param {number} [params.baseWidth] Base width in px.
    */
-  resize(params = {}) {
-    if (params.baseWidth && params.baseFontSize) {
-      const baseFontFactor = this.mainArea.getBoundingClientRect().width / params.baseWidth || 1;
-      const baseFontSize = params.baseFontSize * baseFontFactor;
-      this.mainArea.style.setProperty('--baseFontSize', `${baseFontSize}px`);
+  resize() {
+    if (this.params.baseWidth && this.params.baseFontSize) {
+      const baseFontFactor = this.elementArea.getSize().width / this.params.baseWidth || 1;
+      const baseFontSize = this.params.baseFontSize * baseFontFactor;
 
+      this.elementArea.setBaseFontSize(baseFontSize);
       this.dnb.setContainerEm(baseFontSize);
     }
+
 
     window.clearTimeout(this.pinWrapperTimeout);
     this.pinWrapperTimeout = window.requestAnimationFrame(() => {
       this.dom.style.setProperty('--boardMaxHeight', `${this.elementArea.getSize().height}px`);
       this.sidebar.resize();
     });
+
+    this.params.globals.get('resize')();
   }
 
   toggleSidebar(state) {
@@ -309,7 +310,6 @@ export default class Board {
     }
 
     this.resize();
-    this.params.globals.get('resize')();
   }
 
   /**

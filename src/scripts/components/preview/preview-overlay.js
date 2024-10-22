@@ -96,6 +96,7 @@ export default class PreviewOverlay {
    */
   show() {
     this.dom.classList.remove('display-none');
+    this.params.globals.get('resize')();
   }
 
   /**
@@ -103,6 +104,7 @@ export default class PreviewOverlay {
    */
   hide() {
     this.dom.classList.add('display-none');
+    this.params.globals.get('resize')();
   }
 
   /**

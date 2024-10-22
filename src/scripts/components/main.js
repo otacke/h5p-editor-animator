@@ -46,12 +46,16 @@ export default class Main {
     );
     this.dom.append(this.board.getDOM());
 
-    this.dialog = new Dialog({ dictionary: this.params.dictionary });
+    this.dialog = new Dialog({
+      dictionary: this.params.dictionary,
+      globals: this.params.globals
+    });
     this.dom.appendChild(this.dialog.getDOM());
 
     this.previewOverlay = new PreviewOverlay(
       {
-        dictionary: this.params.dictionary
+        dictionary: this.params.dictionary,
+        globals: this.params.globals
       },
       {
         onDone: () => {
@@ -62,14 +66,25 @@ export default class Main {
     this.dom.append(this.previewOverlay.getDOM());
   }
 
+  /**
+   * Get DOM.
+   * @returns {HTMLElement} DOM.
+   */
   getDOM() {
     return this.dom;
   }
 
-  resize(params) {
-    this.board.resize(params);
+  /**
+   * Resize board
+   */
+  resize() {
+    this.board.resize();
   }
 
+  /**
+   * Handle document mouse down event.
+   * @param {MouseEvent} event Mouse down event.
+   */
   handleDocumentMouseDown(event) {
     this.board.handleDocumentMouseDown(event);
   }
