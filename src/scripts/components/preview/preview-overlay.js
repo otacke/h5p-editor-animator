@@ -4,9 +4,6 @@ import Preview from './preview.js';
 /** Class representing the preview overlay */
 export default class PreviewOverlay {
 
-  // TODO: Close preview button
-  // TODO: Why does hide controls not work properly?
-
   /**
    * @class
    * @param {object} [params] Parameters.

@@ -132,6 +132,7 @@ export default class Main {
    * Close preview.
    */
   closePreview() {
+    this.previewInstance.resetTask();
     this.previewInstance = null;
     this.previewOverlay.decloak();
     this.previewOverlay.hide();
