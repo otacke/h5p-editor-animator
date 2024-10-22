@@ -252,16 +252,7 @@ export default class Element {
       this.params.elementParams.contentType;
     }
 
-    console.log({ ...this.params.elementParams });
-
     this.fitIntoArea(this.params.elementParams);
-
-    console.log({ ...this.params.elementParams });
-
-    if (this.params.elementParams.x < 0) {
-      debugger
-    }
-
 
     this.dom.style.left = `${this.params.elementParams.x}%`;
     this.dom.style.top = `${this.params.elementParams.y}%`;

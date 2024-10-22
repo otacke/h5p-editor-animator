@@ -60,7 +60,7 @@ export default class Board {
         onReleased: (index) => {
           this.editElement(this.elements[index]);
         },
-        onMoved: (index, x, y) => {
+        onMoved: (index, x, y, w, h) => {
           this.updateElementPosition(
             index,
             this.convertToPercent({ x: x }),
