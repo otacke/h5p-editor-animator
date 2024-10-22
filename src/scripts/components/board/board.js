@@ -262,6 +262,10 @@ export default class Board {
       this.createAnimation(animationParams);
     });
 
+    this.elements.forEach((element) => {
+      this.toggleElementVisibility(element.getSubContentId(), !element.isVisible());
+    });
+
     this.toggleSidebar(false);
 
     window.requestAnimationFrame(() => {
@@ -335,15 +339,17 @@ export default class Board {
   /**
    * Toggle element visibility.
    * @param {string} subContentId Subcontent Id of element to toggle.
+   * @param {boolean} [state] True to show, false to hide, undefined to toggle.
    */
-  toggleElementVisibility(subContentId) {
+  toggleElementVisibility(subContentId, state) {
     const element = this.getElementBySubContentId(subContentId);
-    const newState = element.toggleVisibility();
-    if (newState) {
+    element.updateParams({ hidden: state });
+    const elementIsVisible = element.isVisible();
+    if (elementIsVisible) {
       this.dnb.focus(element);
     }
 
-    this.listElements.toggleVisibility(subContentId, newState);
+    this.listElements.toggleVisibility(subContentId, elementIsVisible);
   }
 
   /**

@@ -47,8 +47,6 @@ export default class Element {
       getPosition: () => {}
     }, callbacks);
 
-    this.isVisibleState = true;
-
     this.buildDOM();
 
     H5P.jQuery(this.dom).data('id', this.params.index); // DnB tradeoff
@@ -270,6 +268,13 @@ export default class Element {
 
     if (params.contentType) {
       this.params.elementParams.contentType;
+    }
+
+    const newHiddenState = (typeof params.hidden === 'boolean') ? params.hidden : !this.params.elementParams.hidden;
+    if ((typeof params.hidden === 'boolean') | (newHiddenState !== this.params.elementParams.hidden)) {
+      this.params.elementParams.hidden = newHiddenState;
+      this.dom.classList.toggle('display-none', newHiddenState);
+      this.dnbElement?.blur();
     }
 
     this.fitIntoArea(this.params.elementParams);
@@ -503,15 +508,10 @@ export default class Element {
   }
 
   /**
-   * Toggle visibility
-   * @param {boolean} state True to show, false to hide.
-   * @returns {boolean} New visibility state.
+   * Determine whether element is visible.
+   * @returns {boolean} True if element is visible.
    */
-  toggleVisibility(state) {
-    this.isVisibleState = (typeof state === 'boolean') ? state : !this.isVisibleState;
-    this.dom.classList.toggle('display-none', !this.isVisibleState);
-    this.dnbElement?.blur();
-
-    return this.isVisibleState;
+  isVisible() {
+    return !this.params.elementParams.hidden;
   }
 }
