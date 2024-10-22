@@ -387,7 +387,7 @@ export default class DraggablesList {
    */
   toggleSubMenu(element, state, wasKeyboardUsed) {
     this.subMenu.toggleOptions(this.getCapabilities(element));
-    element.toggleSubMenu(this.subMenu, state, wasKeyboardUsed);
+    element.toggleSubMenu(this.subMenu, state, wasKeyboardUsed, this.dom.scrollTop);
   }
 
   /**

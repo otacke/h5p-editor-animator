@@ -293,8 +293,9 @@ export default class DraggableElement {
    * @param {object} subMenu Sub menu.
    * @param {boolean} state True to open, false to close.
    * @param {boolean} wasKeyboardUsed True if keyboard was used to open sub menu.
+   * @param {number} yOffset Y offset for sub menu.
    */
-  toggleSubMenu(subMenu, state, wasKeyboardUsed) {
+  toggleSubMenu(subMenu, state, wasKeyboardUsed, yOffset = 0) {
     if (!state) {
       subMenu.hide();
       return;
@@ -326,7 +327,7 @@ export default class DraggableElement {
           width: `${draggableRect.width}px`,
           right: `calc(${buttonRect.width}px + ${draggablePaddingRight}px)`,
           // eslint-disable-next-line no-magic-numbers
-          top: `calc(${this.dom.offsetTop}px + ${draggableRect.height / 2}px)`,
+          top: `calc(-${yOffset}px + ${this.dom.offsetTop}px + ${draggableRect.height / 2}px)`,
         }
       });
 
