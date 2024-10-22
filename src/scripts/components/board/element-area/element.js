@@ -226,27 +226,42 @@ export default class Element {
       this.updateRunnable(params.contentType);
     }
 
-    ['x', 'y'].forEach((prop) => {
-      if (typeof params[prop] === 'number') {
-        // eslint-disable-next-line no-magic-numbers
-        params[prop] = Math.max(0, Math.min(params[prop], 100));
-        this.params.elementParams[prop] = params[prop];
-      }
-    });
+    if (params.x !== undefined) {
+      params.x = parseFloat(params.x);
+      // eslint-disable-next-line no-magic-numbers
+      params.x = Math.max(0, Math.min(params.x, 100));
+      this.params.elementParams.x = params.x;
+    }
+
+    if (params.y !== undefined) {
+      params.y = parseFloat(params.y);
+      // eslint-disable-next-line no-magic-numbers
+      params.y = Math.max(0, Math.min(params.y, 100));
+      this.params.elementParams.y = params.y;
+    }
 
     if (params.width) {
-      this.params.elementParams.width = params.width;
+      this.params.elementParams.width = parseFloat(params.width);
     }
 
     if (params.height) {
-      this.params.elementParams.height = params.height;
+      this.params.elementParams.height = parseFloat(params.height);
     }
 
     if (params.contentType) {
       this.params.elementParams.contentType;
     }
 
+    console.log({ ...this.params.elementParams });
+
     this.fitIntoArea(this.params.elementParams);
+
+    console.log({ ...this.params.elementParams });
+
+    if (this.params.elementParams.x < 0) {
+      debugger
+    }
+
 
     this.dom.style.left = `${this.params.elementParams.x}%`;
     this.dom.style.top = `${this.params.elementParams.y}%`;
@@ -411,16 +426,25 @@ export default class Element {
   /**
    * Ensure that element fits into element area.
    * @param {object} telemetry Telemetry data.
-   * @returns {object} Fitted telemetry data.
    */
   fitIntoArea(telemetry = {}) {
-    const aspectRatio = this.params.globals.get('aspectRatio');
-    if (
-      // eslint-disable-next-line no-magic-numbers
-      telemetry.width > 100 || telemetry.height > 100) {
-      // eslint-disable-next-line no-magic-numbers
-      const scaleFactor = (aspectRatio > 1) ? 100 / telemetry.height : 100 / telemetry.width;
+    telemetry.x = parseFloat(telemetry.x);
+    telemetry.y = parseFloat(telemetry.y);
+    telemetry.width = parseFloat(telemetry.width);
+    telemetry.height = parseFloat(telemetry.height);
 
+    // eslint-disable-next-line no-magic-numbers
+    if (telemetry.width > 100) {
+      // eslint-disable-next-line no-magic-numbers
+      const scaleFactor = 100 / telemetry.width;
+      telemetry.width = telemetry.width * scaleFactor;
+      telemetry.height = telemetry.height * scaleFactor;
+    }
+
+    // eslint-disable-next-line no-magic-numbers
+    if (telemetry.height > 100) {
+      // eslint-disable-next-line no-magic-numbers
+      const scaleFactor = 100 / telemetry.height;
       telemetry.width = telemetry.width * scaleFactor;
       telemetry.height = telemetry.height * scaleFactor;
     }
