@@ -17,7 +17,7 @@
     "l10n.confirmationDialogRemoveElementHeader": "Delete element",
     "l10n.confirmationDialogRemoveElementDialog": "Do you really want to delete this element and all attached animations?",
     "l10n.confirmationDialogRemoveElementCancel": "No",
-    "l10n.confirmationDialogRemoveElementConfirm": "Wipe them out, all of them.",
+    "l10n.confirmationDialogRemoveElementConfirm": "Yes, delete those!",
     "l10n.confirmationDialogRemoveAnimationHeader": "Delete animation",
     "l10n.confirmationDialogRemoveAnimationDialog": "Do you really want to delete this animation?",
     "l10n.confirmationDialogRemoveAnimationCancel": "No",
