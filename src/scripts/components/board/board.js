@@ -339,11 +339,10 @@ export default class Board {
   /**
    * Toggle element visibility.
    * @param {string} subContentId Subcontent Id of element to toggle.
-   * @param {boolean} [state] True to show, false to hide, undefined to toggle.
    */
-  toggleElementVisibility(subContentId, state) {
+  toggleElementVisibility(subContentId) {
     const element = this.getElementBySubContentId(subContentId);
-    element.updateParams({ hidden: state });
+    element.updateParams({ hidden: element.isVisible() });
     const elementIsVisible = element.isVisible();
     if (elementIsVisible) {
       this.dnb.focus(element);

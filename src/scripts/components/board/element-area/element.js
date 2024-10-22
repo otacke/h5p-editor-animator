@@ -271,18 +271,12 @@ export default class Element {
       this.params.elementParams.contentType;
     }
 
-    console.log(params.hidden);
-
-    const newHiddenState = (typeof params.hidden === 'boolean') ? params.hidden : !this.params.elementParams.hidden;
-    if ((typeof params.hidden === 'boolean') | (newHiddenState !== this.params.elementParams.hidden)) {
-      this.params.elementParams.hidden = newHiddenState;
-
-      console.log('toggle', newHiddenState);
-
-
-      this.dom.classList.toggle('display-none', newHiddenState);
-      this.dnbElement?.blur();
+    if (typeof params.hidden === 'boolean') {
+      this.params.elementParams.hidden = params.hidden;
     }
+
+    this.dom.classList.toggle('display-none', this.params.elementParams.hidden);
+    this.dnbElement?.blur();
 
     this.fitIntoArea(this.params.elementParams);
 
