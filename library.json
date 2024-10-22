@@ -27,6 +27,26 @@
       "minorVersion": 0
     },
     {
+      "machineName": "H5P.AdvancedText",
+      "majorVersion": 1,
+      "minorVersion": 1
+    },
+    {
+      "machineName": "H5P.Image",
+      "majorVersion": 1,
+      "minorVersion": 1
+    },
+    {
+      "machineName": "H5P.Video",
+      "majorVersion": 1,
+      "minorVersion": 6
+    },
+    {
+      "machineName": "H5P.Shape",
+      "majorVersion": 1,
+      "minorVersion": 0
+    },
+    {
       "machineName": "FontAwesome",
       "majorVersion": 4,
       "minorVersion": 5
