@@ -262,6 +262,7 @@ export default class Board {
       this.createAnimation(animationParams);
     });
 
+    // TODO: This whole visibility/hidden thing is a mess, clean up
     this.elements.forEach((element) => {
       this.toggleElementVisibility(element.getSubContentId(), !element.isVisible());
     });
@@ -339,10 +340,11 @@ export default class Board {
   /**
    * Toggle element visibility.
    * @param {string} subContentId Subcontent Id of element to toggle.
+   * @param {boolean} [state] True to show, false to hide.
    */
-  toggleElementVisibility(subContentId) {
+  toggleElementVisibility(subContentId, state) {
     const element = this.getElementBySubContentId(subContentId);
-    element.updateParams({ hidden: element.isVisible() });
+    element.updateParams({ hidden: state ?? element.isVisible() });
     const elementIsVisible = element.isVisible();
     if (elementIsVisible) {
       this.dnb.focus(element);
