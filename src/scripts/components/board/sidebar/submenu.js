@@ -144,6 +144,19 @@ export default class SubMenu extends H5P.EventDispatcher {
   }
 
   /**
+   * Set sub menu option label.
+   * @param {string} id Id of sub menu option.
+   * @param {string} label Label to set.
+   */
+  setLabel(id, label) {
+    if (!this.options[id] || typeof label !== 'string') {
+      return;
+    }
+
+    this.options[id].innerText = label;
+  }
+
+  /**
    * Get visible options.
    * @returns {HTMLElement[]} Visible options.
    */

@@ -29,10 +29,12 @@
     padding: 0.25rem;
 
     .submenu-popup-option {
+      align-items: center;
       background: transparent;
       border: 0;
       color: var(--color-text-dark);
       cursor: pointer;
+      display: inline-flex;
       line-height: 0.708rem;
       overflow: hidden;
       padding: 0.5rem;
@@ -47,9 +49,8 @@
 
       &::before {
         font-family: "Material Icons", system-ui, -apple-system, sans-serif;
-        margin-right: 0.3em;
+        margin-right: 0.5rem;
         line-height: 1;
-        vertical-align: bottom;
       }
 
       &.submenu-popup-option-edit::before {
@@ -66,6 +67,10 @@
 
       &.submenu-popup-option-remove::before {
         content: var(--icon-materialicons-delete);
+      }
+
+      &.submenu-popup-option-visibility::before {
+        content: var(--icon-materialicons-visibility);
       }
     }
 

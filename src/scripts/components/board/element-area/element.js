@@ -47,6 +47,8 @@ export default class Element {
       getPosition: () => {}
     }, callbacks);
 
+    this.isVisibleState = true;
+
     this.buildDOM();
 
     H5P.jQuery(this.dom).data('id', this.params.index); // DnB tradeoff
@@ -465,5 +467,18 @@ export default class Element {
     }
 
     this.updateParams({ width: width, height: height });
+  }
+
+  /**
+   * Toggle visibility
+   * @param {boolean} state True to show, false to hide.
+   * @returns {boolean} New visibility state.
+   */
+  toggleVisibility(state) {
+    this.isVisibleState = (typeof state === 'boolean') ? state : !this.isVisibleState;
+    this.dom.classList.toggle('display-none', !this.isVisibleState);
+    this.dnbElement?.blur();
+
+    return this.isVisibleState;
   }
 }

@@ -204,7 +204,8 @@ export default class Board {
       {
         dictionary: this.params.dictionary,
         title: this.params.dictionary.get('l10n.elements'),
-        reversed: true
+        reversed: true,
+        canToggleVisibility: true,
       },
       {
         highlight: (subContentId, state) => {
@@ -218,6 +219,9 @@ export default class Board {
         },
         remove: (subContentId) => {
           this.removeElementIfConfirmed(this.getElementBySubContentId(subContentId));
+        },
+        toggleVisibility: (subContentId) => {
+          this.toggleElementVisibility(subContentId);
         }
       }
     );
@@ -324,6 +328,20 @@ export default class Board {
 
       this.dnb.updateCoordinates();
     });
+  }
+
+  /**
+   * Toggle element visibility.
+   * @param {string} subContentId Subcontent Id of element to toggle.
+   */
+  toggleElementVisibility(subContentId) {
+    const element = this.getElementBySubContentId(subContentId);
+    const newState = element.toggleVisibility();
+    if (newState) {
+      this.dnb.focus(element);
+    }
+
+    this.listElements.toggleVisibility(subContentId, newState);
   }
 
   /**

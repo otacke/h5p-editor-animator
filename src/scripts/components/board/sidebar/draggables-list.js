@@ -17,7 +17,8 @@ export default class DraggablesList {
    */
   constructor(params = {}, callbacks = {}) {
     this.params = Util.extend({
-      reversed: false
+      reversed: false,
+      canToggleVisibility: false
     }, params);
 
     this.callbacks = Util.extend({
@@ -25,7 +26,8 @@ export default class DraggablesList {
       move: () => {},
       edit: () => {},
       move: () => {},
-      remove: () => {}
+      remove: () => {},
+      toggleVisibility: () => {}
     }, callbacks);
 
     this.draggableElements = [];
@@ -91,6 +93,14 @@ export default class DraggablesList {
               this.callbacks.remove(draggableElement.getId());
             }),
             keepFocus: true
+          },
+          {
+            id: 'visibility',
+            label: this.params.dictionary.get('l10n.hide'),
+            onClick: ((draggableElement) => {
+              this.callbacks.toggleVisibility(draggableElement.getId());
+            }),
+            keepFocus: true
           }
         ]
       }
@@ -126,6 +136,16 @@ export default class DraggablesList {
    */
   hide() {
     this.dom.classList.add('display-none');
+  }
+
+  /**
+   * Toggle visibility state of draggable.
+   * @param {string} id Id of draggable element to toggle visibility of.
+   * @param {boolean} state True to show, false to hide.
+   */
+  toggleVisibility(id, state) {
+    const draggableElement = this.getById(id);
+    draggableElement.toggleVisibility(state);
   }
 
   /**
@@ -270,6 +290,8 @@ export default class DraggablesList {
    * @param {HTMLElement} element Element being dragged.
    */
   handleDragStart(element) {
+    this.subMenu.hide();
+
     this.draggedElement = element;
     this.dragIndexSource = this.getElementIndex(this.draggedElement);
   }
@@ -387,6 +409,7 @@ export default class DraggablesList {
       'move-up': canMoveUp,
       'move-down': canMoveDown,
       'remove': true,
+      'visibility': this.params.canToggleVisibility
     };
   }
 }

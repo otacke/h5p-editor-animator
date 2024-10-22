@@ -16,6 +16,8 @@ export default class DraggableElement {
       toggleSubMenu: () => {}
     }, callbacks);
 
+    this.isVisible = true;
+
     this.dom = document.createElement('div');
     this.dom.classList.add('h5p-editor-animator-sidebar-draggable-element');
     this.dom.setAttribute('draggable', 'true');
@@ -277,6 +279,21 @@ export default class DraggableElement {
     this.callbacks.onDragEnd(this);
   }
 
+  /**
+   * Toggle visibility.
+   * @param {boolean} state False to set invisible, true to set visible.
+   */
+  toggleVisibility(state) {
+    this.dom.classList.toggle('invisible', !state);
+    this.isVisible = state;
+  }
+
+  /**
+   * Toggle sub menu.
+   * @param {object} subMenu Sub menu.
+   * @param {boolean} state True to open, false to close.
+   * @param {boolean} wasKeyboardUsed True if keyboard was used to open sub menu.
+   */
   toggleSubMenu(subMenu, state, wasKeyboardUsed) {
     if (!state) {
       subMenu.hide();
@@ -285,6 +302,8 @@ export default class DraggableElement {
 
     // Register with subMenu
     subMenu.setParent(this);
+    const labelSelector = this.isVisible ? 'l10n.hide' : 'l10n.show';
+    subMenu.setLabel('visibility', this.params.dictionary.get(labelSelector));
 
     // Move subMenu below this button
     this.dom.after(subMenu.getDOM());

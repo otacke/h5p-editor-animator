@@ -17,6 +17,11 @@
     border-color: var(--color-primary);
   }
 
+  &.invisible {
+    background-color: var(--color-disabled-light);
+    border-style: dotted;
+  }
+
   .h5p-editor-animator-sidebar-draggable-element-info {
     background-color: transparent;
     border: none;
@@ -54,6 +59,10 @@
     height: 2rem;
     margin: auto;
     position: relative;
+
+    &.active {
+      color: var(--color-primary);
+    }
 
     &:hover {
       color: var(--color-primary);
