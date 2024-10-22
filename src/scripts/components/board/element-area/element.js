@@ -118,10 +118,12 @@ export default class Element {
     }
 
     const instance = runnable.getInstance();
+    this.machineName = instance.libraryInfo.machineName;
+    this.defaultTitle = H5PEditor.t('core', 'untitled').replace(':libraryTitle', library.metadata?.contentType);
 
     // H5P.Shape needs extra treatment. It sets its own size for line types, and
     // some values need to be set based on what shape was displayed before.
-    if (instance.libraryInfo.machineName === 'H5P.Shape') {
+    if (this.machineName === 'H5P.Shape') {
       const currentShapeType = library.params.type;
 
       if (this.previousShapeType === 'vertical-line' && currentShapeType !== 'vertical-line') {
@@ -180,8 +182,26 @@ export default class Element {
     return this.params.elementParams.contentType.subContentId;
   }
 
+  /**
+   * Get title of element.
+   * @returns {string} Title of the element.
+   */
   getTitle() {
-    return this.params.elementParams.contentType.metadata.title;
+    let title = this.params.elementParams.contentType.metadata?.title;
+    if (title && title !== this.defaultTitle) {
+      return title;
+    }
+
+    if (this.machineName === 'H5P.AdvancedText') {
+      title = Util.purifyHTML(
+        (this.params.elementParams.contentType.params.text ?? '').replace(/[\n\r]/g, ' ').trim()
+      );
+      if (title) {
+        return title;
+      }
+    }
+
+    return H5PEditor.t('core', 'untitled').replace(':libraryTitle', this.machineName.split('.').pop());
   }
 
   /**

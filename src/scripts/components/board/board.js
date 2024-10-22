@@ -289,7 +289,6 @@ export default class Board {
       this.dnb.setContainerEm(baseFontSize);
     }
 
-
     window.clearTimeout(this.pinWrapperTimeout);
     this.pinWrapperTimeout = window.requestAnimationFrame(() => {
       this.dom.style.setProperty('--boardMaxHeight', `${this.elementArea.getSize().height}px`);
@@ -451,6 +450,7 @@ export default class Board {
 
     const contentTypeName = elementParams.contentType.library.split(' ')[0].split('.').pop();
 
+    // Use element.getTitle() instead of title to get the title from the element
     const title =
       elementParams.contentType?.metadata?.title ??
       H5PEditor.t('core', 'untitled').replace(':libraryTitle', contentTypeName);
@@ -680,10 +680,23 @@ export default class Board {
         );
         element.updateParams(elementParams);
 
-        this.listElements.update(element.getSubContentId(), {
+        // Update title in list of elements
+        this.listElements.update(subContentId, {
           title: element.getTitle(),
           id: element.getSubContentId()
         });
+
+        // Update title in list of animations
+        this.animations
+          .filter((animation) => {
+            return animation.getSubContentId() === subContentId;
+          })
+          .map((animation) => animation.getId())
+          .forEach((id) => {
+            this.listAnimations.update(id, {
+              title: element.getTitle()
+            });
+          });
       },
       onRemoved: () => {
         this.removeElementIfConfirmed(element);
