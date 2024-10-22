@@ -106,6 +106,7 @@ export default class Dialog {
    */
   showForm(params = {}) {
     this.returnFocusTo = params.returnFocusTo ?? null;
+    this.form = params.form ?? null;
     this.children = params.children ?? null;
 
     this.headline.innerText = params.headline ?? '';
@@ -137,6 +138,7 @@ export default class Dialog {
    * @returns {boolean} False.
    */
   handleDone() {
+    // It's important to validate all children, because this is what triggers params to be updated
     const isValid = this.validateFormChildren(this.form, this.children);
     if (isValid) {
       this.hideForm();
@@ -162,10 +164,6 @@ export default class Dialog {
    * @returns {boolean} True if form is valid, else false.
    */
   validateFormChildren(form, children) {
-    if (!form || !children) {
-      return true;
-    }
-
     /*
      * `some` would be quicker than `every`, but all fields should display
      * their validation message
