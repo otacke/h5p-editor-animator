@@ -28,6 +28,10 @@ export default class ElementArea {
     this.ticking = false;
 
     this.dom.addEventListener('wheel', (event) => {
+      if (!event.ctrlKey && !event.metaKey) {
+        return; // Don't interfere with default scrolling
+      }
+
       if ((event.deltaY ?? 0) === 0) {
         return;
       }
