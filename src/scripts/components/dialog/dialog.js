@@ -130,9 +130,10 @@ export default class Dialog {
     this.hide();
     this.focusTrap.deactivate();
 
-    if (this.returnFocusTo) {
-      this.returnFocusTo.focus();
-    }
+    // Waiting prevents dragnbar element to receive focus twice creating two context menus
+    window.requestAnimationFrame(() => {
+      this.returnFocusTo?.focus();
+    });
 
     this.params.globals.get('resize')();
   }
