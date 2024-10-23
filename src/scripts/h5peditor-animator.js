@@ -147,8 +147,8 @@ export default class Animator extends H5P.EventDispatcher {
       return;
     }
 
-    // H5P.getPath() must not use contentId in editor.
-    this.main?.setBackgroundImage(H5P.getPath(contentPath));
+    const contentId = H5PEditor.filesPath ? undefined : this.globals.get('contentId');
+    this.main?.setBackgroundImage(H5P.getPath(contentPath, contentId));
   }
 
   /**
