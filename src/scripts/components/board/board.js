@@ -638,9 +638,14 @@ export default class Board {
    */
   removeAnimation(id) {
     this.listAnimations.remove(id);
-    const deleteIndex = this.animations.findIndex((animation) => animation.getId() === id);
-    this.animations.splice(deleteIndex, 1);
-    this.params.animations.splice(deleteIndex, 1);
+
+    const animationToDelete = this.animations.find((animation) => animation.getId() === id);
+    const elementSubContentId = animationToDelete.getSubContentId();
+
+    this.animations = this.animations
+      .filter((animation) => animation.getId() !== id);
+    this.params.animations = this.params.animations
+      .filter((animation) => animation.subContentId !== elementSubContentId);
 
     this.callbacks.onChanged({ animations: this.params.animations });
   }
