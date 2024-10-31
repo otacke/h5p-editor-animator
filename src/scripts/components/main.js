@@ -147,7 +147,7 @@ export default class Main {
     const libraryUberName = Object.keys(H5PEditor.libraryLoaded)
       .find((library) => library.split(' ')[0] === 'H5P.Animator');
 
-    const contentId = H5PEditor.filesPath ? undefined : H5PEditor.contentId || 1;
+    const contentId = H5PEditor.contentId;
     this.previewInstance = H5P.newRunnable(
       {
         library: libraryUberName,

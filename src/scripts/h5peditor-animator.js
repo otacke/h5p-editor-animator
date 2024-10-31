@@ -40,7 +40,7 @@ export default class Animator extends H5P.EventDispatcher {
 
     this.globals = new Globals();
     this.globals.set('mainInstance', this);
-    this.globals.set('contentId', H5PEditor.contentId || 1);
+    this.globals.set('contentId', H5PEditor.contentId); // Will be undefined if new content
     this.globals.set('aspectRatio', this.retrieveAspectRatio(this.params.aspectRatio));
     this.globals.set('showConfirmationDialog', (params) => {
       this.showConfirmationDialog(params);
@@ -147,8 +147,7 @@ export default class Animator extends H5P.EventDispatcher {
       return;
     }
 
-    const contentId = H5PEditor.filesPath ? undefined : this.globals.get('contentId');
-    this.main?.setBackgroundImage(H5P.getPath(contentPath, contentId));
+    this.main?.setBackgroundImage(H5P.getPath(contentPath, this.globals.get('contentId')));
   }
 
   /**

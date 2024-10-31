@@ -106,7 +106,7 @@ export default class Element {
     this.instanceHolder.classList.add('h5p-editor-animator-element-instance');
     this.clickBlocker.parentNode.insertBefore(this.instanceHolder, this.clickBlocker);
 
-    const contentId = H5PEditor.filesPath ? undefined : this.params.globals.get('contentId');
+    const contentId = this.params.globals.get('contentId');
     const runnable = new Runnable({
       library: library,
       contentID: contentId,
