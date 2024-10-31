@@ -147,10 +147,6 @@ export default class Main {
     const libraryUberName = Object.keys(H5PEditor.libraryLoaded)
       .find((library) => library.split(' ')[0] === 'H5P.Animator');
 
-    const foo = this.callbacks.getPreviewParams();
-    console.log('animations', foo.editor.animations);
-    console.log('elements', foo.editor.elements);
-
     const contentId = H5PEditor.contentId;
     this.previewInstance = H5P.newRunnable(
       {
