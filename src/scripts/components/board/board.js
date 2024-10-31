@@ -603,7 +603,10 @@ export default class Board {
 
     // Remove element
     elementToRemove.remove();
-    this.elements = this.elements.filter((element) => element !== elementToRemove);
+    this.elements = this.elements.filter((element) => {
+      return element.getSubContentId() !== subContentId;
+    });
+
     this.params.elements = this.params.elements.filter((paramsElement) => {
       return paramsElement.contentType.subContentId !== subContentId;
     });
