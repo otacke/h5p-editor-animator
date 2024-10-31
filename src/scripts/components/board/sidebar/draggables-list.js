@@ -342,7 +342,7 @@ export default class DraggablesList {
    */
   bringToFront(index) {
     const domElement = this.draggableElements[index].getDOM();
-    this.dom.prepend(domElement);
+    this.draggablesWrapper.prepend(domElement);
 
     this.draggableElements.push(this.draggableElements.splice(index, 1)[0]);
   }
@@ -353,7 +353,7 @@ export default class DraggablesList {
    */
   sendToBack(index) {
     const domElement = this.draggableElements[index].getDOM();
-    this.dom.append(domElement);
+    this.draggablesWrapper.append(domElement);
 
     this.draggableElements.unshift(this.draggableElements.splice(index, 1)[0]);
   }

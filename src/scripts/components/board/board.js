@@ -655,7 +655,10 @@ export default class Board {
    * @param {Element} element Map element to be brought to front.
    */
   bringToFront(element) {
-    const elementIndex = this.elements.indexOf(element);
+    const elementIndex = this.params.elements.findIndex((paramsElement) => {
+      return paramsElement.contentType.subContentId === element.getSubContentId();
+    });
+
     this.params.elements.push(this.params.elements.splice(elementIndex, 1)[0]);
 
     this.elementArea.bringToFront(elementIndex);
@@ -669,7 +672,10 @@ export default class Board {
    * @param {Element} element Element to be sent to back.
    */
   sendToBack(element) {
-    const elementIndex = this.elements.indexOf(element);
+    const elementIndex = this.params.elements.findIndex((paramsElement) => {
+      return paramsElement.contentType.subContentId === element.getSubContentId();
+    });
+
     this.params.elements.unshift(this.params.elements.splice(elementIndex, 1)[0]);
 
     this.elementArea.sendToBack(elementIndex);

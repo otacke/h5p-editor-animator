@@ -117,6 +117,10 @@ export default class ElementArea {
     this.dom.classList.add('display-none');
   }
 
+  getIndexOf(element) {
+    return Array.from(this.elementArea.children).indexOf(element);
+  }
+
   /**
    * Bring element to front.
    * @param {number} index Index of element to bring to front.
