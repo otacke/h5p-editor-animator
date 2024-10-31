@@ -432,8 +432,10 @@ export default class Board {
         onSentToBack: (element) => {
           this.sendToBack(element);
         },
-        onChanged: (index, elementParams) => {
+        onChanged: (subContentId, elementParams) => {
+          const index = this.params.elements.findIndex((element) => element.contentType.subContentId === subContentId);
           this.params.elements[index] = elementParams;
+
           this.callbacks.onChanged({ elements: this.params.elements });
         },
         getPosition: (element) => {
@@ -487,6 +489,7 @@ export default class Board {
         onChanged: (id, elementParams) => {
           const index = this.animations.findIndex((animation) => animation.getId() === id);
           this.params.animations[index] = elementParams;
+
           this.callbacks.onChanged({ animations: this.params.animations });
         }
       }

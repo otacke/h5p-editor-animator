@@ -286,7 +286,7 @@ export default class Element {
     this.dom.style.width = `${this.params.elementParams.width}%`;
     this.dom.style.height = `${this.params.elementParams.height}%`;
 
-    this.callbacks.onChanged(this.params.index, this.params.elementParams);
+    this.callbacks.onChanged(this.getSubContentId(), this.params.elementParams);
   }
 
   /**

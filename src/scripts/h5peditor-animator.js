@@ -403,20 +403,7 @@ export default class Animator extends H5P.EventDispatcher {
       this.params[key] = values[key];
     }
 
-    this.findInconsistencies();
-
     this.setValue(this.field, this.params);
-  }
-
-  findInconsistencies() {
-    this.params.animations.forEach((animation) => {
-      const subcontentId = animation.subContentId;
-      const ok = this.params.elements.some((element) => element.contentType?.subContentId === subcontentId);
-      if (!ok) {
-        console.error(`Animation with subcontent ID ${subcontentId} does not have a corresponding element.`);
-        debugger
-      }
-    });
   }
 
   /**
