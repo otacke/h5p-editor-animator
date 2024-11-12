@@ -1,6 +1,6 @@
 {
   "name": "h5peditor-animator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Editor widget for H5P Animator",
   "private": true,
   "scripts": {
