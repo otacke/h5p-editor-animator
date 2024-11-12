@@ -434,6 +434,9 @@ export default class Board {
         },
         onChanged: (subContentId, elementParams) => {
           const index = this.params.elements.findIndex((element) => element.contentType.subContentId === subContentId);
+          if (index === -1) {
+            this.params.elements.push(elementParams);
+          }
           this.params.elements[index] = elementParams;
 
           this.callbacks.onChanged({ elements: this.params.elements });
