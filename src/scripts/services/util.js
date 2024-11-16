@@ -6,6 +6,24 @@ const DOUBLE_CLICK_COUNT = 2;
 /** @constant {number} DOUBLE_CLICK_TIME Double click time in ms. */
 const DOUBLE_CLICK_TIME = 300;
 
+/** @constant {number} DEFAULT_ELEMENT_OFFSET_PROCENT_MIN Minimum offset when pasting in procent. */
+const DEFAULT_ELEMENT_OFFSET_PROCENT_MIN = 2.5;
+
+/** @constant {number} DEFAULT_ELEMENT_OFFSET_PROCENT_MAX Maximum offset when pasting in procent. */
+const DEFAULT_ELEMENT_OFFSET_PROCENT_MAX = 10;
+
+/**
+ * Get random offset in procent.
+ * @param {number} min Minimum offset.
+ * @param {number} max Maximum offset.
+ * @returns {number} Random offset.
+ */
+export const getRandomOffset = (min = DEFAULT_ELEMENT_OFFSET_PROCENT_MIN, max = DEFAULT_ELEMENT_OFFSET_PROCENT_MAX) => {
+  // eslint-disable-next-line no-magic-numbers
+  const direction = Math.random() < 0.5 ? -1 : 1;
+  return direction * (Math.random() * (max - min) + min);
+};
+
 /** Class for utility functions */
 export default class Util {
   /**

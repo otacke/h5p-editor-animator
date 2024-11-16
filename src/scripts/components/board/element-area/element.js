@@ -1,3 +1,4 @@
+import { getRandomOffset } from '@services/util.js';
 import Util from '@services/util.js';
 import Runnable from '@models/runnable.js';
 
@@ -14,8 +15,8 @@ const HORIZONTAL_CENTER = 50;
 const VERTICAL_CENTER = 50;
 
 const DEFAULT_SIZE_PERCENT = {
-  width: 50,
-  height: 50
+  width: 25,
+  height: 25
 };
 
 export default class Element {
@@ -28,9 +29,9 @@ export default class Element {
   constructor(params = {}, callbacks = {}) {
     params.elementParams = Util.extend({
       // eslint-disable-next-line no-magic-numbers
-      x: HORIZONTAL_CENTER - DEFAULT_SIZE_PERCENT.width / 2,
+      x: HORIZONTAL_CENTER - DEFAULT_SIZE_PERCENT.width / 2 + getRandomOffset(),
       // eslint-disable-next-line no-magic-numbers
-      y: VERTICAL_CENTER - DEFAULT_SIZE_PERCENT.height * 0.5 / 2,
+      y: VERTICAL_CENTER - DEFAULT_SIZE_PERCENT.height * 0.5 / 2 + getRandomOffset(),
       width: DEFAULT_SIZE_PERCENT.width,
       height: DEFAULT_SIZE_PERCENT.height,
       hidden: false,

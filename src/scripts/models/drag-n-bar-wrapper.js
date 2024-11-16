@@ -1,3 +1,4 @@
+import { getRandomOffset } from '@services/util.js';
 import Util from '@services/util.js';
 
 /** @constant {string} MAIN_MACHINENAME Content type main machine name. */
@@ -193,18 +194,24 @@ export default class DragNBarWrapper {
 
     let $element;
     if (pasted.from === MAIN_MACHINENAME) {
+      if (pasted.specific.x) {
+        pasted.specific.x = String(parseFloat(pasted.specific.x) + getRandomOffset());
+      }
+      if (pasted.specific.y) {
+        pasted.specific.y = String(parseFloat(pasted.specific.y) + getRandomOffset());
+      }
+
       $element = this.callbacks.createElement(pasted.specific);
     }
     else {
       const elementAreaRect = this.params.elementArea.getBoundingClientRect();
-
       $element = this.callbacks.createElement({
         contentType: pasted.generic,
         generic: 'contentType',
         // eslint-disable-next-line no-magic-numbers
-        width: Math.min(pasted.width, 100),
+        ...(pasted.width && { width: Math.min(pasted.width, 100) }),
         // eslint-disable-next-line no-magic-numbers
-        height: Math.min(pasted.height * elementAreaRect.width / elementAreaRect.height, 100),
+        ...(pasted.height && { height: Math.min(pasted.height * elementAreaRect.width / elementAreaRect.height, 100) }),
       });
     }
 
