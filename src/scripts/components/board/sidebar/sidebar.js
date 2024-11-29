@@ -4,11 +4,12 @@ import './sidebar.scss';
 
 export default class Sidebar {
 
-  constructor(params = {
-    subComponents: [],
-  }, callbacks = {}) {
+  /**
+   * @class
+   * @param {params} params Parameters.
+   */
+  constructor(params = { subComponents: [] }) {
     this.params = Util.extend({}, params);
-    this.callbacks = Util.extend({}, callbacks);
 
     this.dom = document.createElement('div');
     this.dom.classList.add('h5p-editor-animator-sidebar');

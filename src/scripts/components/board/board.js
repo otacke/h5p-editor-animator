@@ -176,8 +176,6 @@ export default class Board {
       {
         contentButtonsDOM: contentButtons.getDOM(),
         actionButtonsDOM: this.actionButtons.getDOM()
-      },
-      {
       }
     );
     this.dom.append(this.toolbar.getDOM());
@@ -249,9 +247,7 @@ export default class Board {
       }
     );
 
-    this.sidebar = new Sidebar({
-      subComponents: [this.listElements, this.listAnimations]
-    }, {});
+    this.sidebar = new Sidebar({ subComponents: [this.listElements, this.listAnimations] });
     this.mainArea.append(this.sidebar.getDOM());
 
     this.params.elements.forEach((elementParams) => {

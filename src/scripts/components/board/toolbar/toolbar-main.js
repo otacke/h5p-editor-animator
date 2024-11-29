@@ -7,14 +7,10 @@ export default class ToolbarMain {
    * @class
    * @param {object} [params] Parameters.
    * @param {HTMLElement} [params.contentButtonsDOM] Button objects for DnB.
-   * @param {object} [callbacks] Callbacks.
    */
-  constructor(params = {}, callbacks = {}) {
+  constructor(params = {}) {
     this.params = Util.extend({
     }, params);
-
-    this.callbacks = Util.extend({
-    }, callbacks);
 
     this.dom = document.createElement('div');
     this.dom.classList.add('h5p-editor-animator-toolbar-main');
