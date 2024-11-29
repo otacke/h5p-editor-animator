@@ -1,6 +1,13 @@
 import Util from '@services/util.js';
 
 export default class Animation {
+
+  /**
+   * @class
+   * @param {object} [params] Parameters.
+   * @param {object} [callbacks] Callbacks.
+   * @param {object} [callbacks.onChanged] Callback when parameters are changed.
+   */
   constructor(params = {}, callbacks = {}) {
     this.params = Util.extend({}, params);
 
@@ -77,11 +84,9 @@ export default class Animation {
   }
 
   /**
-   * Update parameters. Assuming all properties to use percentage.
-   * @param {object} [params] Parameters.
+   * Update parameters.
    */
-  updateParams(params = {}) {
-    // TODO: Sanitize parameters if necessary
+  updateParams() {
     this.callbacks.onChanged(this.getId(), this.getParams());
   }
 }

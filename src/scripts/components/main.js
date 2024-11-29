@@ -18,23 +18,12 @@ export default class Main {
     this.dom = document.createElement('div');
     this.dom.classList.add('h5p-editor-animator-main');
 
+    // Board
     this.board = new Board(
       this.params,
       {
         onChanged: (values) => {
-          // Safety net
-          if (values.elements) {
-            values.elements = values.elements.map((element) => {
-              element.x = `${element.x}`;
-              element.y = `${element.y}`;
-              element.width = `${element.width}`;
-              element.height = `${element.height}`;
-
-              return element;
-            });
-          }
-
-          this.callbacks.onChanged(values);
+          this.handleChanged(values);
         },
         showFormDialog: (params) => {
           this.dialog.showForm(params);
@@ -46,12 +35,14 @@ export default class Main {
     );
     this.dom.append(this.board.getDOM());
 
+    // Dialog
     this.dialog = new Dialog({
       dictionary: this.params.dictionary,
       globals: this.params.globals
     });
     this.dom.appendChild(this.dialog.getDOM());
 
+    // Preview overlay
     this.previewOverlay = new PreviewOverlay(
       {
         dictionary: this.params.dictionary,
@@ -162,5 +153,25 @@ export default class Main {
     if (!this.previewInstance) {
       return;
     }
+  }
+
+  /**
+   * Handle changed values in board.
+   * @param {object} values Values
+   */
+  handleChanged(values) {
+    // Ensure that values are strings
+    if (values.elements) {
+      values.elements = values.elements.map((element) => {
+        element.x = `${element.x}`;
+        element.y = `${element.y}`;
+        element.width = `${element.width}`;
+        element.height = `${element.height}`;
+
+        return element;
+      });
+    }
+
+    this.callbacks.onChanged(values);
   }
 }

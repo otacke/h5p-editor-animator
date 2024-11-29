@@ -12,6 +12,9 @@ const DEFAULT_ELEMENT_OFFSET_PROCENT_MIN = 2.5;
 /** @constant {number} DEFAULT_ELEMENT_OFFSET_PROCENT_MAX Maximum offset when pasting in procent. */
 const DEFAULT_ELEMENT_OFFSET_PROCENT_MAX = 10;
 
+/** @constant {string} DEFAULT_ASPECT_RATIO Default aspect ratio. */
+const DEFAULT_ASPECT_RATIO = '16/9';
+
 /**
  * Get random offset in procent.
  * @param {number} min Minimum offset.
@@ -22,6 +25,35 @@ export const getRandomOffset = (min = DEFAULT_ELEMENT_OFFSET_PROCENT_MIN, max = 
   // eslint-disable-next-line no-magic-numbers
   const direction = Math.random() < 0.5 ? -1 : 1;
   return direction * (Math.random() * (max - min) + min);
+};
+
+/**
+ * Retrieve aspect ratio.
+ * @param {number|string} aspectRatio Aspect ratio.
+ * @returns {number} Aspect ratio.
+ */
+export const parseAspectRatio = (aspectRatio) => {
+  if (typeof aspectRatio === 'number') {
+    aspectRatio = aspectRatio.toString();
+  }
+
+  if (typeof aspectRatio !== 'string') {
+    aspectRatio = DEFAULT_ASPECT_RATIO;
+  }
+
+  if (aspectRatio.match(/^\d+(.\d+)?$/)) {
+    aspectRatio = `${aspectRatio}/1`;
+  }
+
+  if (!(aspectRatio.match(/^\d+(.\d+)?[:/]\d+(.\d+)?$/))) {
+    aspectRatio = DEFAULT_ASPECT_RATIO;
+  }
+
+  const [width, height] = aspectRatio.includes(':') ?
+    aspectRatio.split(':') :
+    aspectRatio.split('/');
+
+  return parseFloat(width) / parseFloat(height);
 };
 
 /** Class for utility functions */
@@ -47,6 +79,38 @@ export default class Util {
       }
     }
     return arguments[0];
+  }
+
+  /**
+   * Add mixins to a class, useful for splitting files.
+   * @param {object} [master] Master class to add mixins to.
+   * @param {object[]|object} [mixins] Mixins to be added to master.
+   */
+  static addMixins(master = {}, mixins = []) {
+    if (!master.prototype) {
+      return;
+    }
+
+    if (!Array.isArray(mixins)) {
+      mixins = [mixins];
+    }
+
+    const masterPrototype = master.prototype;
+
+    mixins.forEach((mixin) => {
+      const mixinPrototype = mixin.prototype;
+      Object.getOwnPropertyNames(mixinPrototype).forEach((property) => {
+        if (property === 'constructor') {
+          return; // Don't need constructor
+        }
+
+        if (Object.getOwnPropertyNames(masterPrototype).includes(property)) {
+          return; // property already present, do not override
+        }
+
+        masterPrototype[property] = mixinPrototype[property];
+      });
+    });
   }
 
   /**

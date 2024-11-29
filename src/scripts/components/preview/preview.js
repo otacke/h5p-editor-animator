@@ -28,7 +28,7 @@ export default class Preview {
       return;
     }
 
-    this.dom.innerHTML = '';
+    this.dom.innerHTML = ''; // Clear previous instance
     instance.attach(H5P.jQuery(this.dom));
   }
 }

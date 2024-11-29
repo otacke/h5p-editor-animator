@@ -1,12 +1,11 @@
 import Dictionary from '@services/dictionary.js';
 import Globals from '@services/globals.js';
 import Util from '@services/util.js';
+import { parseAspectRatio } from '@services/util.js';
+import { determineValidSubContentOptions, getUberName } from '@services/h5p-util.js';
 import Main from '@components/main.js';
 
 import '@styles/h5peditor-animator.scss';
-
-/** @constant {string} DEFAULT_ASPECT_RATIO Default aspect ratio. */
-const DEFAULT_ASPECT_RATIO = '16/9';
 
 /** @constant {number} BASE_WIDTH_PX Base width for font size computation. */
 const BASE_WIDTH_PX = 640;
@@ -41,7 +40,7 @@ export default class Animator extends H5P.EventDispatcher {
     this.globals = new Globals();
     this.globals.set('mainInstance', this);
     this.globals.set('contentId', H5PEditor.contentId); // Will be undefined if new content
-    this.globals.set('aspectRatio', this.retrieveAspectRatio(this.params.aspectRatio));
+    this.globals.set('aspectRatio', parseAspectRatio(this.params.aspectRatio));
     this.globals.set('showConfirmationDialog', (params) => {
       this.showConfirmationDialog(params);
     });
@@ -61,7 +60,9 @@ export default class Animator extends H5P.EventDispatcher {
     );
 
     // DOM
-    this.dom = this.buildDOM();
+    this.dom = document.createElement('div');
+    this.dom.classList.add('h5peditor-animator');
+
     this.$container = H5P.jQuery(this.dom); // TODO: Replace once H5P Group removes jQuery from H5P core
 
     this.buildMain();
@@ -155,38 +156,9 @@ export default class Animator extends H5P.EventDispatcher {
    * @param {number|string} value Aspect ratio.
    */
   setAspectRatio(value) {
-    const aspectRatio = this.retrieveAspectRatio(value);
+    const aspectRatio = parseAspectRatio(value);
     this.globals.set('aspectRatio', aspectRatio);
     this.main?.setAspectRatio(aspectRatio);
-  }
-
-  /**
-   * Retrieve aspect ratio.
-   * @param {number|string} aspectRatio Aspect ratio.
-   * @returns {number} Aspect ratio.
-   */
-  retrieveAspectRatio(aspectRatio) {
-    if (typeof aspectRatio === 'number') {
-      aspectRatio = aspectRatio.toString();
-    }
-
-    if (typeof aspectRatio !== 'string') {
-      aspectRatio = DEFAULT_ASPECT_RATIO;
-    }
-
-    if (aspectRatio.match(/^\d+(.\d+)?$/)) {
-      aspectRatio = `${aspectRatio}/1`;
-    }
-
-    if (!(aspectRatio.match(/^\d+(.\d+)?[:/]\d+(.\d+)?$/))) {
-      aspectRatio = DEFAULT_ASPECT_RATIO;
-    }
-
-    const [width, height] = aspectRatio.includes(':') ?
-      aspectRatio.split(':') :
-      aspectRatio.split('/');
-
-    return parseFloat(width) / parseFloat(height);
   }
 
   /**
@@ -226,7 +198,7 @@ export default class Animator extends H5P.EventDispatcher {
         },
         getPreviewParams: () => {
           return ({
-            a11y: this.parent.commonFields[this.getUberName()].a11y.params,
+            a11y: this.parent.commonFields[getUberName('H5P.Animator')].a11y.params,
             audio: {
               audio: this.audioFieldInstance?.params
             },
@@ -257,7 +229,7 @@ export default class Animator extends H5P.EventDispatcher {
    * @returns {object[]} Subcontent options.
    */
   async getSubcontentOptions() {
-    const subContentOptions = await this.determineValidSubContentOptions();
+    const subContentOptions = await determineValidSubContentOptions(this.field);
 
     // For sorting in the toolbar
     const subContentPriorities = {
@@ -281,29 +253,11 @@ export default class Animator extends H5P.EventDispatcher {
   }
 
   /**
-   * Determine valid subcontent options.
-   * @async
-   * @returns {object[]} Valid subcontent options.
-   */
-  async determineValidSubContentOptions() {
-    const contentTypeField = H5PEditor.findSemanticsField('contentType', this.field);
-    const subContentOptions = contentTypeField?.options ?? [];
-
-    const libraries = await new Promise((resolve) => {
-      H5PEditor.LibraryListCache.getLibraries(subContentOptions, resolve);
-    });
-
-    return libraries.filter((library) =>
-      !library.isRestricted && subContentOptions.includes(library.uberName)
-    );
-  }
-
-  /**
    * Append field to wrapper. Invoked by H5P core.
    * @param {H5P.jQuery} $wrapper Wrapper.
    */
   appendTo($wrapper) {
-    $wrapper.get(0).append(this.$container.get(0));
+    $wrapper.get(0).append(this.dom);
   }
 
   /**
@@ -318,7 +272,7 @@ export default class Animator extends H5P.EventDispatcher {
    * Remove self. Invoked by H5P core.
    */
   remove() {
-    this.$container.get(0).remove();
+    this.dom.remove();
   }
 
   /**
@@ -345,17 +299,6 @@ export default class Animator extends H5P.EventDispatcher {
   }
 
   /**
-   * Build DOM.
-   * @returns {HTMLElement} DOM for this class.
-   */
-  buildDOM() {
-    const dom = document.createElement('div');
-    dom.classList.add('h5peditor-animator');
-
-    return dom;
-  }
-
-  /**
    * Fill Dictionary.
    */
   fillDictionary() {
@@ -363,35 +306,21 @@ export default class Animator extends H5P.EventDispatcher {
     const plainTranslations = H5PEditor.language['H5PEditor.Animator'].libraryStrings || {};
     const translations = {};
 
-    for (const key in plainTranslations) {
-      let current = translations;
-      // Assume string keys separated by . or / for defining path
+    Object.entries(plainTranslations).forEach(([key, value]) => {
       const splits = key.split(/[./]+/);
       const lastSplit = splits.pop();
 
-      // Create nested object structure if necessary
-      splits.forEach((split) => {
-        if (!current[split]) {
-          current[split] = {};
+      const current = splits.reduce((acc, split) => {
+        if (!acc[split]) {
+          acc[split] = {};
         }
-        current = current[split];
-      });
+        return acc[split];
+      }, translations);
 
-      // Add translation string
-      current[lastSplit] = plainTranslations[key];
-    }
+      current[lastSplit] = value;
+    });
 
     this.dictionary.fill(translations);
-  }
-
-  /**
-   * Get uber name of Animator library.
-   * @returns {string} Uber name of Animator library.
-   */
-  getUberName() {
-    return Object.keys(
-      H5PEditor.libraryLoaded).find((library) => library.split(' ')[0] === 'H5P.Animator'
-    );
   }
 
   /**

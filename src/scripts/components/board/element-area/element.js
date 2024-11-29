@@ -326,7 +326,7 @@ export default class Element {
     }
 
     if (this.dnbElement) {
-      this.params.dnb.remove(this.dnbElement);
+      this.params.dnbWrapper.remove(this.dnbElement);
       delete this.dnbElement;
     }
 
@@ -336,7 +336,7 @@ export default class Element {
       return this.callbacks.getPosition($element.get(0));
     };
 
-    this.dnbElement = this.params.dnb.add(
+    this.dnbElement = this.params.dnbWrapper.add(
       $element,
       H5P.DragNBar.clipboardify('H5PEditor.Animator', elementParams, 'contentType'),
       options

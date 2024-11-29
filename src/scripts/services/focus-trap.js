@@ -137,9 +137,7 @@ export default class FocusTrap {
   handleVisible() {
     this.updateFocusableElements();
 
-    this.params.trapElement.addEventListener(
-      'keydown', this.handleKeydownEvent, true
-    );
+    this.params.trapElement.addEventListener('keydown', this.handleKeydownEvent, true);
 
     this.currentFocusElement = null;
 

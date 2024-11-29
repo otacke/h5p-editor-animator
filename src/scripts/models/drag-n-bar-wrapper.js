@@ -82,8 +82,18 @@ export default class DragNBarWrapper {
    * @param {HTMLElement} dom DOM element to attach to.
    */
   attach(dom) {
+    this.parentDOM = dom;
+
     this.dnb.attach(H5P.jQuery(dom));
     this.updatePasteButton();
+  }
+
+  /**
+   * Get parent DOM.
+   * @returns {HTMLElement} Parent DOM.
+   */
+  getParentDOM() {
+    return this.parentDOM;
   }
 
   /**

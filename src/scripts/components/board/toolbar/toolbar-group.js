@@ -229,12 +229,14 @@ export default class ToolbarGroup {
     if (typeof offset !== 'number') {
       return;
     }
+
     if (
       this.currentButtonIndex + offset < 0 ||
       this.currentButtonIndex + offset > Object.keys(this.buttons).length - 1
     ) {
       return; // Don't cycle
     }
+
     Object.values(this.buttons)[this.currentButtonIndex]
       .setAttribute('tabindex', '-1');
     this.currentButtonIndex = this.currentButtonIndex + offset;
@@ -265,6 +267,7 @@ export default class ToolbarGroup {
     else {
       return;
     }
+
     event.preventDefault();
   }
 }
