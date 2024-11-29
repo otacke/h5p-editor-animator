@@ -43,7 +43,7 @@ export default class Board {
 
     // TODO: This whole visibility/hidden thing is a mess, clean up
     this.elements.forEach((element) => {
-      this.toggleElementVisibility(element.getSubContentId(), !element.isVisible());
+      this.toggleElementVisibility(element.getSubContentId(), element.isVisible());
     });
 
     this.toggleSidebar(false);

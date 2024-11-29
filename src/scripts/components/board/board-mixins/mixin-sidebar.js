@@ -107,8 +107,9 @@ export default class MixinSidebar {
    */
   toggleElementVisibility(subContentId, state) {
     const element = this.getElementBySubContentId(subContentId);
-    element.updateParams({ hidden: state ?? element.isVisible() });
-    const elementIsVisible = element.isVisible();
+    element.updateParams({ hidden: !(state ?? !element.isVisible()) });
+    const elementIsVisible = element.isVisible(); // Check after toggling
+
     if (elementIsVisible) {
       this.dnbWrapper.focus(element);
     }
