@@ -67,6 +67,7 @@
     "a11y.openSubMenu": "Untermenü öffnen",
     "a11y.closeSubMenu": "Untermenü schließen",
     "a11y.previewOpened": "Vorschau wurde geöffnet.",
-    "a11y.previewClosed": "Vorschau wurde geschlossen."
+    "a11y.previewClosed": "Vorschau wurde geschlossen.",
+    "a11y.pasteContent": "Inhalt aus der Zwischenablage einfügen."
   }
 }

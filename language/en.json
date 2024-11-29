@@ -67,6 +67,7 @@
     "a11y.openSubMenu": "Open submenu",
     "a11y.closeSubMenu": "Close submenu",
     "a11y.previewOpened": "Preview was opened.",
-    "a11y.previewClosed": "Preview was closed."
+    "a11y.previewClosed": "Preview was closed.",
+    "a11y.pasteContent": "Paste content from clipboard."
   }
 }

@@ -132,7 +132,11 @@ export default class ToolbarGroup {
       this.buttons[buttonId] = new ToolbarDnbButtonWrapper({
         a11yContentTypeWrapper: this.params.a11yContentTypeWrapper,
         id: buttonId,
-        buttonDOM: anchor
+        buttonDOM: anchor,
+        a11y: {
+          contentTypeWrapper: this.params.a11y.contentTypeWrapper,
+          pasteContent: this.params.a11y.pasteContent
+        }
       }, {
         onKeydown: (focusedElement) => {
           this.callbacks.onKeydown(focusedElement);

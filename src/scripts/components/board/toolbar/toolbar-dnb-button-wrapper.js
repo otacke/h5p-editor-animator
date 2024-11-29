@@ -3,6 +3,9 @@ import Util from '@services/util.js';
 export default class ToolbarDnbButtonWrapper {
 
   constructor(params = {}, callbacks = {}) {
+    params.a11y = params.a11y ?? {};
+    params.a11y.pasteContent = params.a11y.pasteContent ?? 'Paste content from clipboard';
+
     this.callbacks = Util.extend({
       onKeydown: () => {}
     }, callbacks);
@@ -10,9 +13,9 @@ export default class ToolbarDnbButtonWrapper {
     this.id = params.id;
     this.button = params.buttonDOM;
     this.button.setAttribute('role', 'button');
-    const ariaLabel = this.button.getAttribute('aria-label') ?? 'Paste'; // TODO: Needs translation
-    if (ariaLabel !== 'Paste') { // TODO: Needs translation
-      this.button.setAttribute('aria-label', params.a11yContentTypeWrapper.replace('@type', ariaLabel));
+    const ariaLabel = this.button.getAttribute('aria-label') ?? params.a11y.pasteContent;
+    if (ariaLabel !== params.a11y.pasteContent) {
+      this.button.setAttribute('aria-label', params.a11y.contentTypeWrapper.replace('@type', ariaLabel));
     }
     else {
       this.button.setAttribute('aria-label', ariaLabel);

@@ -16,9 +16,10 @@ export default class MixinToolbar {
     // Toolbar components
     const contentButtons = new ToolbarGroup(
       {
-        a11yContentTypeWrapper: this.params.dictionary.get('a11y.contentTypeWrapper'),
         dnbDOM: dnbDOMElement,
         a11y: {
+          contentTypeWrapper: this.params.dictionary.get('a11y.contentTypeWrapper'),
+          pasteContent: this.params.dictionary.get('a11y.pasteContent'),
           toolbarLabel: this.params.dictionary.get('a11y.toolbarLabelContents')
         },
         ariaControlsId: this.elementArea.getID()

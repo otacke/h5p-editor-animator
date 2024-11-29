@@ -89,7 +89,7 @@ export default class MixinSidebar {
     this.listAnimations.handleDocumentMouseDown(event);
     this.listElements.handleDocumentMouseDown(event);
 
-    const dnbFocusTimeout = 100; // TODO: DnB requires some time before it updates the focus, find a better way
+    const dnbFocusTimeout = 100; // DnB requires some time before it updates the focus
     window.setTimeout(() => {
       if (this.getElementInFocus()) {
         this.listAnimations.enableAddButton();
