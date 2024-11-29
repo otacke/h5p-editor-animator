@@ -51,7 +51,6 @@ export default class MixinElements {
       }
     );
 
-    // TODO: Rename this.elements to something better
     // Important: The order of these must not be changed, find things by subcontent id, not index
     this.elements.push(element);
     this.elementArea.appendElement(element.getDOM());
