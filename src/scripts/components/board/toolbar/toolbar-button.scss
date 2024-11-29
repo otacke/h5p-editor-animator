@@ -3,15 +3,15 @@
 
   .tooltip {
     border-radius: 4px;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: #fff;
+    background-color: var(--color-tooltip-background);
+    color: var(--color-text-light);
     font-family: "Open Sans", sans-serif;
-    font-size: 0.6em;
+    font-size: var(--font-size-small);
     left: 50%;
     transform: translate(-50%, 0);
-    line-height: 2em;
+    line-height: 2rem;
     position: absolute;
-    padding: 0 0.5em;
+    padding: 0 0.5rem;
     top: 100%;
     white-space: pre;
     z-index: 1;
@@ -32,7 +32,7 @@
     box-sizing: border-box;
     display: flex;
     flex-shrink: 0;
-    font-size: 1em;
+    font-size: var(--font-size-normal);
     height: var(--toolbar-button-size);
     padding: 0;
     position: relative;
@@ -67,10 +67,10 @@
     }
 
     &.toolbar-button-disabled {
-      background-color: rgba(128, 128, 128, .95);
+      background-color: var(--color-disabled);
 
       &::before {
-        color: #fff;
+        color: var(--color-text-light);
       }
     }
   }

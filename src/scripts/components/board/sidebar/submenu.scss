@@ -5,7 +5,7 @@
   border-radius: 4px;
   box-shadow: 0 10px 20px var(--color-shadow-dark);
   box-sizing: border-box;
-  font-size: 0.75rem;
+  font-size: var(--font-size-small);
   position: absolute;
   z-index: 2; // Needs to be larger than z-index of placeholder
 
@@ -16,7 +16,7 @@
   .submenu-popup-title {
     background-color: var(--color-primary-10);
     font-weight: bold;
-    line-height: 0.708rem;
+    line-height: 0.8rem;
     overflow: hidden;
     padding: 0.5rem;
     text-overflow: ellipsis;
@@ -35,7 +35,7 @@
       color: var(--color-text-dark);
       cursor: pointer;
       display: inline-flex;
-      line-height: 0.708rem;
+      line-height: 0.75rem;
       overflow: hidden;
       padding: 0.5rem;
       text-align: left;

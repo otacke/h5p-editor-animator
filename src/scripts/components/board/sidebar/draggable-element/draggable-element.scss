@@ -35,7 +35,7 @@
 
     .h5p-editor-animator-sidebar-draggable-element-type {
       color: var(--color-text);
-      font-size: 0.8rem;
+      font-size: var(--font-size-small);
       font-weight: bold;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -44,7 +44,7 @@
 
     .h5p-editor-animator-sidebar-draggable-element-details {
       color: var(--color-text);
-      font-size: 0.8rem;
+      font-size: var(--font-size-small);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -70,7 +70,7 @@
 
     &::before {
       font-family: "H5PFontAwesome4", sans-serif;
-      font-size: 1.2rem;
+      font-size: var(--font-size-large);
       left: 50%;
       position: absolute;
       top: 50%;

@@ -10,12 +10,15 @@
 
   // Disabled color, e.g. for buttons
   --color-disabled: rgb(128 128 128 / 95%);
+  --color-disabled-dark: rgb(0 0 0 / 75%);
   --color-disabled-light: rgb(0 0 0 / 5%);
 
   // Hint box, e.g. for when no content is set
   --color-hint-message-background: rgb(245, 232, 213);
   --color-hint-message-border: rgb(238, 221, 85);
   --color-hint-message-text: rgb(135, 78, 18);
+
+  --color-tooltip-background: rgb(0 0 0 / 90%);
 
   // Primary color with common gradients
   --color-primary: rgb(26, 115, 217);
@@ -30,10 +33,13 @@
   --color-primary-90: rgb(26 115 217 / 90%);
   --color-primary-95: rgb(26 115 217 / 95%);
 
+  --color-primary-dark: rgb(23, 104, 196);
+
   // Commonly used by H5P Group
   --color-joubelui-button: rgb(26, 115, 217);
   --color-joubelui-button-hover: rgb(19, 86, 163);
   --color-joubelui-button-active: rgb(16, 72, 136);
+  --color-editor-field-border: #d0d0d1;
 
   --color-incorrect: rgb(183, 28, 28);
   --color-incorrect-80: rgb(183 28 28 / 80%);
@@ -55,6 +61,11 @@
   --icon-materialicons-arrow-downward: "\e5db";
   --icon-materialicons-delete: "\e872";
   --icon-materialicons-visibility: "\e8f4";
+
+  // Font sizes
+  --font-size-small: 0.8rem;
+  --font-size-normal: 1rem;
+  --font-size-large: 1.15rem;
 
   display: block;
 }

@@ -15,7 +15,7 @@
 
         &::before {
           font-family: "H5PFontAwesome4", sans-serif;
-          font-size: 1.15rem;
+          font-size: var(--font-size-large);
           font-weight: bold;
           height: 1.15rem;
           left: 50%;
@@ -99,7 +99,7 @@
 
             &::before {
               font-family: "H5PFontAwesome4", sans-serif;
-              font-size: 1.15rem;
+              font-size: var(--font-size-large);
               font-weight: bold;
               height: 1.15rem;
               left: 50%;
@@ -137,7 +137,7 @@
 
   .h5p-editor-animator-board-main-area {
     display: grid;
-    grid-template-columns: 1fr min(28ch, 30%);
+    grid-template-columns: 1fr min(28ch, 30%); // A little arbitraty
     column-gap: 0.5rem;
   }
 
