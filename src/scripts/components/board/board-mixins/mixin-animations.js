@@ -12,7 +12,7 @@ export default class MixinAnimations {
         id: H5P.createUUID(),
         semantics: this.params.animationsFields,
         params: params,
-        originalInstance: this.params.globals.get('animationsGroupInstance')
+        originalInstance: this.params.globals.get('animationsGroupInstance'),
       },
       {
         onChanged: (id, elementParams) => {
@@ -20,8 +20,8 @@ export default class MixinAnimations {
           this.params.animations[index] = elementParams;
 
           this.callbacks.onChanged({ animations: this.params.animations });
-        }
-      }
+        },
+      },
     );
 
     this.animations.push(animation);
@@ -30,13 +30,13 @@ export default class MixinAnimations {
     const details = [
       this.params.dictionary.get(`l10n.animation.${params.effect}`),
       this.params.dictionary.get(`l10n.animation.${params.startWith}`),
-      `${params.duration}s`
+      `${params.duration}s`,
     ].join(' \u00b7 ');
 
     this.listAnimations.add({
       title: element.getTitle(),
       details: details,
-      id: animation.getId()
+      id: animation.getId(),
     });
 
     return animation;
@@ -54,7 +54,7 @@ export default class MixinAnimations {
       confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveAnimationConfirm'),
       callbackConfirmed: () => {
         this.removeAnimation(id);
-      }
+      },
     });
   }
 
@@ -86,7 +86,7 @@ export default class MixinAnimations {
       const element = this.getElementInFocus();
       if (element) {
         animation = this.createAnimation({
-          subContentId: element.getSubContentId()
+          subContentId: element.getSubContentId(),
         });
         id = animation.getId();
       }
@@ -110,7 +110,7 @@ export default class MixinAnimations {
         const details = [
           this.params.dictionary.get(`l10n.animation.${params.effect}`),
           this.params.dictionary.get(`l10n.animation.${params.startWith}`),
-          `${params.duration}s`
+          `${params.duration}s`,
         ].join(' \u00b7 ');
 
         this.listAnimations.update(
@@ -118,12 +118,12 @@ export default class MixinAnimations {
           {
             title: element.getTitle(),
             details: details,
-          }
+          },
         );
       },
       onRemoved: () => {
         this.removeAnimationIfConfirmed(id);
-      }
+      },
     });
 
     setTimeout(() => {

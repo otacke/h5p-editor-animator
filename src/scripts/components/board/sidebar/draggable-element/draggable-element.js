@@ -13,7 +13,7 @@ export default class DraggableElement {
       onDragEnter: () => {},
       onDragLeave: () => {},
       onDragEnd: () => {},
-      toggleSubMenu: () => {}
+      toggleSubMenu: () => {},
     }, callbacks);
 
     this.isVisible = true;
@@ -25,7 +25,7 @@ export default class DraggableElement {
     // Placeholder to show when dragging
     this.dragPlaceholder = document.createElement('div');
     this.dragPlaceholder.classList.add(
-      'h5peditor-animator-drag-placeholder'
+      'h5peditor-animator-drag-placeholder',
     );
 
     // These listeners prevent Firefox from showing draggable animation
@@ -165,7 +165,7 @@ export default class DraggableElement {
    */
   attachDragPlaceholder() {
     this.dom.parentNode.insertBefore(
-      this.dragPlaceholder, this.dom.nextSibling
+      this.dragPlaceholder, this.dom.nextSibling,
     );
   }
 
@@ -211,7 +211,7 @@ export default class DraggableElement {
     // Used in dragstart for Firefox workaround
     this.pointerPosition = {
       x: event.clientX,
-      y: event.clientY
+      y: event.clientY,
     };
 
     this.callbacks.onMouseDown(this.getId(), true);
@@ -228,7 +228,7 @@ export default class DraggableElement {
     event.dataTransfer.setDragImage(
       this.dom,
       this.pointerPosition.x - this.dom.getBoundingClientRect().left,
-      this.pointerPosition.y - this.dom.getBoundingClientRect().top
+      this.pointerPosition.y - this.dom.getBoundingClientRect().top,
     );
 
     // Will hide browser's draggable copy as well without timeout
@@ -328,7 +328,7 @@ export default class DraggableElement {
           right: `calc(${buttonRect.width}px + ${draggablePaddingRight}px)`,
           // eslint-disable-next-line no-magic-numbers
           top: `calc(-${yOffset}px + ${this.dom.offsetTop}px + ${draggableRect.height / 2}px)`,
-        }
+        },
       });
 
       subMenu.once('hidden', (event) => {

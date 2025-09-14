@@ -7,7 +7,7 @@ export default class ToolbarDnbButtonWrapper {
     params.a11y.pasteContent = params.a11y.pasteContent ?? 'Paste content from clipboard';
 
     this.callbacks = Util.extend({
-      onKeydown: () => {}
+      onKeydown: () => {},
     }, callbacks);
 
     this.id = params.id;
@@ -29,7 +29,7 @@ export default class ToolbarDnbButtonWrapper {
       event.stopPropagation();
 
       this.button.dispatchEvent(new MouseEvent('mousedown', {
-        which: 1 // DragNBar uses deprecated which property to identify left mouse button
+        which: 1, // DragNBar uses deprecated which property to identify left mouse button
       }));
 
       // Focus the DNB element, otherwise keydown listener of group will still be in focus

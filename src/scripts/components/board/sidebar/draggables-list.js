@@ -18,7 +18,7 @@ export default class DraggablesList {
   constructor(params = {}, callbacks = {}) {
     this.params = Util.extend({
       reversed: false,
-      canToggleVisibility: false
+      canToggleVisibility: false,
     }, params);
 
     this.callbacks = Util.extend({
@@ -27,7 +27,7 @@ export default class DraggablesList {
       edit: () => {},
       move: () => {},
       remove: () => {},
-      toggleVisibility: () => {}
+      toggleVisibility: () => {},
     }, callbacks);
 
     this.draggableElements = [];
@@ -46,7 +46,7 @@ export default class DraggablesList {
       this.addButton = document.createElement('button');
       this.addButton.classList.add('h5p-editor-animator-sidebar-list-add-button');
       this.addButton.setAttribute(
-        'aria-label', this.params.addButtonLabel ?? this.params.dictionary.get('a11y.addElement')
+        'aria-label', this.params.addButtonLabel ?? this.params.dictionary.get('a11y.addElement'),
       );
       this.addButton.addEventListener('click', () => {
         this.callbacks.edit();
@@ -66,7 +66,7 @@ export default class DraggablesList {
             onClick: ((draggableElement) => {
               this.callbacks.edit(draggableElement.getId());
             }),
-            keepFocus: true
+            keepFocus: true,
           },
           {
             id: 'move-up',
@@ -75,7 +75,7 @@ export default class DraggablesList {
               const index = this.getElementIndex(draggableElement);
               this.callbacks.move(index, index + (this.params.reversed ? 1 : -1), false);
             }),
-            keepFocus: true
+            keepFocus: true,
           },
           {
             id: 'move-down',
@@ -84,7 +84,7 @@ export default class DraggablesList {
               const index = this.getElementIndex(draggableElement);
               this.callbacks.move(index, index + (this.params.reversed ? -1 : 1), false);
             }),
-            keepFocus: true
+            keepFocus: true,
           },
           {
             id: 'remove',
@@ -92,7 +92,7 @@ export default class DraggablesList {
             onClick: ((draggableElement) => {
               this.callbacks.remove(draggableElement.getId());
             }),
-            keepFocus: true
+            keepFocus: true,
           },
           {
             id: 'visibility',
@@ -100,10 +100,10 @@ export default class DraggablesList {
             onClick: ((draggableElement) => {
               this.callbacks.toggleVisibility(draggableElement.getId());
             }),
-            keepFocus: true
-          }
-        ]
-      }
+            keepFocus: true,
+          },
+        ],
+      },
     );
     this.dom.appendChild(this.subMenu.getDOM());
   }
@@ -192,8 +192,8 @@ export default class DraggablesList {
         },
         toggleSubMenu: (element, state, wasKeyboardUsed) => {
           this.toggleSubMenu(element, state, wasKeyboardUsed);
-        }
-      }
+        },
+      },
     );
 
     draggableElement.setParams(params);
@@ -409,7 +409,7 @@ export default class DraggablesList {
       'move-up': canMoveUp,
       'move-down': canMoveDown,
       'remove': true,
-      'visibility': this.params.canToggleVisibility
+      'visibility': this.params.canToggleVisibility,
     };
   }
 }

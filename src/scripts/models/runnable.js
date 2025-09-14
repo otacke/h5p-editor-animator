@@ -13,7 +13,7 @@ export default class Runnable {
       params.library,
       params.contentID,
       params.target ? H5P.jQuery(params.target) : undefined,
-      !params.target
+      !params.target,
     );
 
     if (!this.instance || !params.eventDispatcher) {

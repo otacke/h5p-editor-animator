@@ -13,7 +13,7 @@ export const determineValidSubContentOptions = async (field) => {
   });
 
   return libraries.filter((library) =>
-    !library.isRestricted && subContentOptions.includes(library.uberName)
+    !library.isRestricted && subContentOptions.includes(library.uberName),
   );
 };
 

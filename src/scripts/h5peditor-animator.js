@@ -30,7 +30,7 @@ export default class Animator extends H5P.EventDispatcher {
     this.field = field;
     this.params = Util.extend({
       elements: [],
-      animations: []
+      animations: [],
     }, params);
     this.setValue = setValue;
 
@@ -56,7 +56,7 @@ export default class Animator extends H5P.EventDispatcher {
 
     // Instantiate original field (or create your own and call setValue)
     this.fieldInstance = new H5PEditor.widgets[this.field.type](
-      this.parent, this.field, this.params, this.setValue
+      this.parent, this.field, this.params, this.setValue,
     );
 
     // DOM
@@ -170,14 +170,14 @@ export default class Animator extends H5P.EventDispatcher {
     const elementsFields = H5P.cloneObject(elementsGroup.fields, true);
 
     this.globals.set('elementsGroupInstance', new H5PEditor.widgets[elementsGroup.type](
-      this, elementsGroup, this.params.elements, () => {} // No setValue needed
+      this, elementsGroup, this.params.elements, () => {}, // No setValue needed
     ));
 
     const animationsGroup = this.field.fields.find((field) => field.name === 'animations').field;
     const animationsFields = H5P.cloneObject(animationsGroup.fields, true);
 
     this.globals.set('animationsGroupInstance', new H5PEditor.widgets[animationsGroup.type](
-      this, animationsGroup, this.params.animations, () => {} // No setValue needed
+      this, animationsGroup, this.params.animations, () => {}, // No setValue needed
     ));
 
     this.main = new Main(
@@ -190,7 +190,7 @@ export default class Animator extends H5P.EventDispatcher {
         animationsFields: animationsFields,
         subContentOptions: await this.getSubcontentOptions(),
         baseWidth: BASE_WIDTH_PX,
-        baseFontSize: BASE_FONT_SIZE_PX
+        baseFontSize: BASE_FONT_SIZE_PX,
       },
       {
         onChanged: (values) => {
@@ -200,23 +200,23 @@ export default class Animator extends H5P.EventDispatcher {
           return ({
             a11y: this.parent.commonFields[getUberName('H5P.Animator')].a11y.params,
             audio: {
-              audio: this.audioFieldInstance?.params
+              audio: this.audioFieldInstance?.params,
             },
             background: {
               backgroundColor: this.backgroundColorFieldInstance?.getColor(),
-              backgroundImage: this.backgroundImageFieldInstance?.params
+              backgroundImage: this.backgroundImageFieldInstance?.params,
             },
             behaviour: {
               aspectRatio: this.globals.get('aspectRatio'),
-              hideControls: this.hideControlsFieldInstance?.value
+              hideControls: this.hideControlsFieldInstance?.value,
             },
             editor: {
               elements: this.params.elements,
-              animations: this.params.animations
-            }
+              animations: this.params.animations,
+            },
           });
-        }
-      }
+        },
+      },
     );
     this.dom.append(this.main.getDOM());
 
@@ -236,7 +236,7 @@ export default class Animator extends H5P.EventDispatcher {
       'H5P.AdvancedText': 0,
       'H5P.Image': 1,
       'H5P.Video': 2,
-      'H5P.Shape': 3
+      'H5P.Shape': 3,
     };
     const nextPriority = Math.max(...Object.values(subContentPriorities)) + 1;
 

@@ -16,7 +16,7 @@ const VERTICAL_CENTER = 50;
 
 const DEFAULT_SIZE_PERCENT = {
   width: 25,
-  height: 25
+  height: 25,
 };
 
 export default class Element {
@@ -46,7 +46,7 @@ export default class Element {
       onBroughtToFront: () => {},
       onSentToBack: () => {},
       onChanged: () => {},
-      getPosition: () => {}
+      getPosition: () => {},
     }, callbacks);
 
     this.buildDOM();
@@ -55,13 +55,13 @@ export default class Element {
 
     this.form = this.generateForm(
       this.params.elementFields,
-      this.params.elementParams
+      this.params.elementParams,
     );
     this.form.$element = H5P.jQuery(this.dom);
     this.form.$element.position = () => {
       return {
         left: parseFloat(this.dom.style.left),
-        top: parseFloat(this.dom.style.top)
+        top: parseFloat(this.dom.style.top),
       };
     };
 
@@ -111,7 +111,7 @@ export default class Element {
     const runnable = new Runnable({
       library: library,
       contentID: contentId,
-      eventDispatcher: this.params.globals.get('mainInstance')
+      eventDispatcher: this.params.globals.get('mainInstance'),
     });
 
     if (!runnable) {
@@ -195,7 +195,7 @@ export default class Element {
 
     if (this.machineName === 'H5P.AdvancedText') {
       title = Util.purifyHTML(
-        (this.params.elementParams.contentType.params.text ?? '').replace(/[\n\r]/g, ' ').trim()
+        (this.params.elementParams.contentType.params.text ?? '').replace(/[\n\r]/g, ' ').trim(),
       );
       if (title) {
         return title;
@@ -249,14 +249,14 @@ export default class Element {
 
     if (params.x !== undefined) {
       params.x = parseFloat(params.x);
-      // eslint-disable-next-line no-magic-numbers
+       
       params.x = Math.max(0, Math.min(params.x, 100));
       this.params.elementParams.x = params.x;
     }
 
     if (params.y !== undefined) {
       params.y = parseFloat(params.y);
-      // eslint-disable-next-line no-magic-numbers
+       
       params.y = Math.max(0, Math.min(params.y, 100));
       this.params.elementParams.y = params.y;
     }
@@ -339,7 +339,7 @@ export default class Element {
     this.dnbElement = this.params.dnbWrapper.add(
       $element,
       H5P.DragNBar.clipboardify('H5PEditor.Animator', elementParams, 'contentType'),
-      options
+      options,
     );
 
     this.dnbElement.contextMenu.on('contextMenuEdit', () => {
@@ -373,7 +373,7 @@ export default class Element {
       semantics,
       params,
       H5P.jQuery(form),
-      this.params.globals.get('elementsGroupInstance')
+      this.params.globals.get('elementsGroupInstance'),
     );
 
     const elementsGroupInstance = this.params.globals.get('elementsGroupInstance');
@@ -406,7 +406,7 @@ export default class Element {
 
     return {
       form: form,
-      children: elementsGroupInstance.children
+      children: elementsGroupInstance.children,
     };
   }
 
@@ -452,30 +452,30 @@ export default class Element {
     telemetry.width = parseFloat(telemetry.width);
     telemetry.height = parseFloat(telemetry.height);
 
-    // eslint-disable-next-line no-magic-numbers
+     
     if (telemetry.width > 100) {
-      // eslint-disable-next-line no-magic-numbers
+       
       const scaleFactor = 100 / telemetry.width;
       telemetry.width = telemetry.width * scaleFactor;
       telemetry.height = telemetry.height * scaleFactor;
     }
 
-    // eslint-disable-next-line no-magic-numbers
+     
     if (telemetry.height > 100) {
-      // eslint-disable-next-line no-magic-numbers
+       
       const scaleFactor = 100 / telemetry.height;
       telemetry.width = telemetry.width * scaleFactor;
       telemetry.height = telemetry.height * scaleFactor;
     }
 
-    // eslint-disable-next-line no-magic-numbers
+     
     if (telemetry.x + telemetry.width > 100) {
-      // eslint-disable-next-line no-magic-numbers
+       
       telemetry.x = 100 - telemetry.width;
     }
-    // eslint-disable-next-line no-magic-numbers
+     
     if (telemetry.y + telemetry.height > 100) {
-      // eslint-disable-next-line no-magic-numbers
+       
       telemetry.y = 100 - telemetry.height;
     }
   }

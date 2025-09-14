@@ -29,8 +29,8 @@ export default class MixinSidebar {
         },
         toggleVisibility: (subContentId) => {
           this.toggleElementVisibility(subContentId);
-        }
-      }
+        },
+      },
     );
 
     this.listAnimations = new DraggablesList(
@@ -52,8 +52,8 @@ export default class MixinSidebar {
         },
         remove: (id) => {
           this.removeAnimationIfConfirmed(id);
-        }
-      }
+        },
+      },
     );
 
     this.sidebar = new Sidebar({ subComponents: [this.listElements, this.listAnimations] });

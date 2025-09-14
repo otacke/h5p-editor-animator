@@ -45,7 +45,7 @@ export default class FocusTrap {
       () => {
         this.handleVisible();
       },
-      { root: document.documentElement }
+      { root: document.documentElement },
     );
   }
 

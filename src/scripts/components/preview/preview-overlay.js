@@ -12,7 +12,7 @@ export default class PreviewOverlay {
   constructor(params = {}, callbacks = {}) {
     this.params = params || {};
     this.callbacks = callbacks || {
-      onDone: () => {}
+      onDone: () => {},
     };
 
     this.dom = document.createElement('div');

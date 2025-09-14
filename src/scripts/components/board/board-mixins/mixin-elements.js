@@ -15,7 +15,7 @@ export default class MixinElements {
         index: index,
         elementParams: params,
         elementFields: this.params.elementsFields,
-        dnbWrapper: this.dnbWrapper
+        dnbWrapper: this.dnbWrapper,
       },
       {
         onEdited: (element) => {
@@ -47,8 +47,8 @@ export default class MixinElements {
           const top = elementRect.top - elementAreaRect.top + 2 * this.elementArea.getDOM().scrollTop;
 
           return { left: left, top: top };
-        }
-      }
+        },
+      },
     );
 
     // Important: The order of these must not be changed, find things by subcontent id, not index
@@ -67,7 +67,7 @@ export default class MixinElements {
     this.listElements.add({
       title: title,
       details: contentTypeName,
-      id: elementParams.contentType.subContentId
+      id: elementParams.contentType.subContentId,
     });
 
     return element.getData().$element;
@@ -92,9 +92,9 @@ export default class MixinElements {
       return;
     }
 
-    // eslint-disable-next-line no-magic-numbers
+     
     x = Math.max(0, Math.min(100, x));
-    // eslint-disable-next-line no-magic-numbers
+     
     y = Math.max(0, Math.min(100, y));
 
     this.elements[index].updateParams({ x: x, y: y });
@@ -119,12 +119,12 @@ export default class MixinElements {
    */
   convertToPercent(value = {}) {
     if (typeof value.x === 'number') {
-      // eslint-disable-next-line no-magic-numbers
+       
       return value.x * 100 / this.elementArea.getSize().width;
     }
 
     if (typeof value.y === 'number') {
-      // eslint-disable-next-line no-magic-numbers
+       
       return value.y * 100 / this.elementArea.getSize().height;
     }
 
@@ -143,7 +143,7 @@ export default class MixinElements {
       confirmText: this.params.dictionary.get('l10n.confirmationDialogRemoveElementConfirm'),
       callbackConfirmed: () => {
         this.removeElement(element);
-      }
+      },
     });
   }
 
@@ -183,7 +183,7 @@ export default class MixinElements {
 
     this.callbacks.onChanged({
       elements: this.params.elements,
-      animations: this.params.animations
+      animations: this.params.animations,
     });
   }
 
@@ -234,14 +234,14 @@ export default class MixinElements {
       onDone: () => {
         const subContentId = element.getSubContentId();
         const elementParams = this.params.elements.find(
-          (element) => element.contentType.subContentId === subContentId
+          (element) => element.contentType.subContentId === subContentId,
         );
         element.updateParams(elementParams);
 
         // Update title in list of elements
         this.listElements.update(subContentId, {
           title: element.getTitle(),
-          id: element.getSubContentId()
+          id: element.getSubContentId(),
         });
 
         // Update title in list of animations
@@ -252,13 +252,13 @@ export default class MixinElements {
           .map((animation) => animation.getId())
           .forEach((id) => {
             this.listAnimations.update(id, {
-              title: element.getTitle()
+              title: element.getTitle(),
             });
           });
       },
       onRemoved: () => {
         this.removeElementIfConfirmed(element);
-      }
+      },
     });
 
     setTimeout(() => {

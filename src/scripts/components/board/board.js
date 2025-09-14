@@ -20,7 +20,7 @@ export default class Board {
 
     this.callbacks = Util.extend({
       onChanged: () => {},
-      togglePreview: () => {}
+      togglePreview: () => {},
     }, callbacks);
 
     this.elements = [];
@@ -93,26 +93,26 @@ export default class Board {
           this.updateElementPosition(
             index,
             this.convertToPercent({ x: x }),
-            this.convertToPercent({ y: y })
+            this.convertToPercent({ y: y }),
           );
         },
         onResized: (index, left, top, width, height) => {
           this.updateElementSize(
             index,
             this.convertToPercent({ x: width }),
-            this.convertToPercent({ y: height })
+            this.convertToPercent({ y: height }),
           );
 
           this.updateElementPosition(
             index,
             this.convertToPercent({ x: left }),
-            this.convertToPercent({ y: top })
+            this.convertToPercent({ y: top }),
           );
         },
         createElement: (params) => {
           return this.createElement(params);
-        }
-      }
+        },
+      },
     );
 
     this.dnbWrapper.attach(document.createElement('div'));

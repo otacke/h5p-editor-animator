@@ -14,7 +14,7 @@ export default class ToolbarButton {
       a11y: {
         active: '',
         disabled: '',
-        inactive: ''
+        inactive: '',
       },
       active: false,
       classes: [],
@@ -81,10 +81,10 @@ export default class ToolbarButton {
 
     if (this.pulseIndex < this.params.pulseStates.length) {
       this.button.classList.add(
-        `toolbar-button-${this.params.pulseStates[this.pulseIndex].id}`
+        `toolbar-button-${this.params.pulseStates[this.pulseIndex].id}`,
       );
       this.button.setAttribute(
-        'aria-label', this.params.pulseStates[this.pulseIndex].label
+        'aria-label', this.params.pulseStates[this.pulseIndex].label,
       );
     }
 
@@ -103,8 +103,8 @@ export default class ToolbarButton {
       this.callbacks.onClick(
         event, {
           active: this.active,
-          id: this.params.id
-        }
+          id: this.params.id,
+        },
       );
     });
 
@@ -251,15 +251,15 @@ export default class ToolbarButton {
       this.params.pulseStates.forEach((state, index) => {
         if (index === this.pulseIndex) {
           this.button.classList.add(
-            `toolbar-button-${state.id}`
+            `toolbar-button-${state.id}`,
           );
           this.button.setAttribute(
-            'aria-label', state.label
+            'aria-label', state.label,
           );
         }
         else {
           this.button.classList.remove(
-            `toolbar-button-${state.id}`
+            `toolbar-button-${state.id}`,
           );
         }
       });
@@ -319,15 +319,15 @@ export default class ToolbarButton {
     }
 
     this.button.classList.remove(
-      `toolbar-button-${this.params.pulseStates[this.pulseIndex].id}`
+      `toolbar-button-${this.params.pulseStates[this.pulseIndex].id}`,
     );
     this.pulseIndex = (this.pulseIndex + 1) % pulseLength;
     this.button.classList.add(
-      `toolbar-button-${this.params.pulseStates[this.pulseIndex].id}`
+      `toolbar-button-${this.params.pulseStates[this.pulseIndex].id}`,
     );
 
     this.button.setAttribute(
-      'aria-label', this.params.pulseStates[this.pulseIndex].label
+      'aria-label', this.params.pulseStates[this.pulseIndex].label,
     );
   }
 

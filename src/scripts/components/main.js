@@ -12,7 +12,7 @@ export default class Main {
     this.params = params;
     this.callbacks = Util.extend({
       onChanged: () => {},
-      getPreviewParams: () => {}
+      getPreviewParams: () => {},
     }, callbacks);
 
     this.dom = document.createElement('div');
@@ -30,15 +30,15 @@ export default class Main {
         },
         togglePreview: () => {
           this.openPreview();
-        }
-      }
+        },
+      },
     );
     this.dom.append(this.board.getDOM());
 
     // Dialog
     this.dialog = new Dialog({
       dictionary: this.params.dictionary,
-      globals: this.params.globals
+      globals: this.params.globals,
     });
     this.dom.appendChild(this.dialog.getDOM());
 
@@ -46,13 +46,13 @@ export default class Main {
     this.previewOverlay = new PreviewOverlay(
       {
         dictionary: this.params.dictionary,
-        globals: this.params.globals
+        globals: this.params.globals,
       },
       {
         onDone: () => {
           this.closePreview();
-        }
-      }
+        },
+      },
     );
     this.dom.append(this.previewOverlay.getDOM());
   }
@@ -147,7 +147,7 @@ export default class Main {
       contentId,
       undefined,
       undefined,
-      { metadata: { title: this.contentTitle } }
+      { metadata: { title: this.contentTitle } },
     );
 
     if (!this.previewInstance) {

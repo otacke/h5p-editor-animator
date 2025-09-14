@@ -20,9 +20,9 @@ export default class MixinToolbar {
         a11y: {
           contentTypeWrapper: this.params.dictionary.get('a11y.contentTypeWrapper'),
           pasteContent: this.params.dictionary.get('a11y.pasteContent'),
-          toolbarLabel: this.params.dictionary.get('a11y.toolbarLabelContents')
+          toolbarLabel: this.params.dictionary.get('a11y.toolbarLabelContents'),
         },
-        ariaControlsId: this.elementArea.getID()
+        ariaControlsId: this.elementArea.getID(),
       }, {
         onKeydown: (createdElement) => {
           const element = this.elements.find((element) => element.getDOM() === createdElement);
@@ -31,8 +31,8 @@ export default class MixinToolbar {
           }
 
           this.editElement(element);
-        }
-      }
+        },
+      },
     );
 
     const toolbarButtons = [
@@ -46,7 +46,7 @@ export default class MixinToolbar {
         },
         onClick: () => {
           this.toggleSidebar();
-        }
+        },
       },
       {
         id: 'zoom-in',
@@ -59,7 +59,7 @@ export default class MixinToolbar {
         keyshortcuts: KEY_SHORTCUTS_ZOOM_IN,
         onClick: () => {
           this.elementArea.zoomIn();
-        }
+        },
       },
       {
         id: 'zoom-out',
@@ -72,7 +72,7 @@ export default class MixinToolbar {
         keyshortcuts: KEY_SHORTCUTS_ZOOM_OUT,
         onClick: () => {
           this.elementArea.zoomOut();
-        }
+        },
       },
       {
         id: 'preview',
@@ -84,24 +84,24 @@ export default class MixinToolbar {
         onClick: () => {
           this.dnbWrapper.blurAll();
           this.callbacks.togglePreview();
-        }
-      }
+        },
+      },
     ];
 
     this.actionButtons = new ToolbarGroup({
       buttons: toolbarButtons,
       className: 'h5p-editor-animator-toolbar-action',
       a11y: {
-        toolbarLabel: this.params.dictionary.get('a11y.toolbarLabelActions')
+        toolbarLabel: this.params.dictionary.get('a11y.toolbarLabelActions'),
       },
-      ariaControlsId: this.elementArea.getID()
+      ariaControlsId: this.elementArea.getID(),
     }, {});
 
     this.toolbar = new ToolbarMain(
       {
         contentButtonsDOM: contentButtons.getDOM(),
-        actionButtonsDOM: this.actionButtons.getDOM()
-      }
+        actionButtonsDOM: this.actionButtons.getDOM(),
+      },
     );
   }
 
@@ -139,10 +139,10 @@ export default class MixinToolbar {
         return this.createElement({
           contentType: {
             library: params.uberName,
-            params: {}
-          }
+            params: {},
+          },
         });
-      }
+      },
     };
   }
 }

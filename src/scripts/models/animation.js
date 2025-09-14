@@ -12,7 +12,7 @@ export default class Animation {
     this.params = Util.extend({}, params);
 
     this.callbacks = Util.extend({
-      onChanged: () => {}
+      onChanged: () => {},
     }, callbacks);
 
     const formData = this.generateForm(this.params.semantics, this.params.params, this.params.originalInstance);
@@ -58,12 +58,12 @@ export default class Animation {
       semantics,
       params,
       H5P.jQuery(form),
-      originalInstance
+      originalInstance,
     );
 
     return {
       form: form,
-      children: originalInstance.children
+      children: originalInstance.children,
     };
   }
 

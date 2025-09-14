@@ -11,8 +11,8 @@ export default class MixinElementArea {
       {
         onZoomChanged: (zoom) => {
           this.handleZoomChanged(zoom);
-        }
-      }
+        },
+      },
     );
   }
 

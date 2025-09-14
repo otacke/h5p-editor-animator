@@ -18,7 +18,7 @@ export default class ElementArea {
 
     this.callbacks = Util.extend({
       onChanged: () => {},
-      onZoomChanged: () => {}
+      onZoomChanged: () => {},
     }, callbacks);
 
     this.dom = document.createElement('div');
@@ -227,7 +227,7 @@ export default class ElementArea {
 
     this.zoomLevelIndex = bestFitIndex;
 
-    // eslint-disable-next-line no-magic-numbers
+     
     this.elementArea.style.setProperty('--zoom', `${100 * this.getZoomFactor()}%`);
 
     this.dom.classList.toggle('overflow-scroll', this.getZoomFactor() > 1);

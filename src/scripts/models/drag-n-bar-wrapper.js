@@ -9,7 +9,7 @@ export default class DragNBarWrapper {
   constructor(params = {}, callbacks = {}) {
     this.params = Util.extend({
       subContentOptions: [],
-      buttons: []
+      buttons: [],
     }, params);
 
     this.callbacks = Util.extend({
@@ -17,20 +17,20 @@ export default class DragNBarWrapper {
       onReleased: () => {},
       onMoved: () => {},
       onResized: () => {},
-      createElement: () => {}
+      createElement: () => {},
     }, callbacks);
 
     this.dnb = new H5P.DragNBar(
       this.params.buttons,
       H5P.jQuery(this.params.elementArea),
       H5P.jQuery(this.params.dialogContainer),
-      { enableCopyPaste: true }
+      { enableCopyPaste: true },
     );
 
     this.dnb.stopMovingCallback = (x, y) => {
       this.callbacks.onStoppedMoving(
         // Seems there's no better way to get hold of element added
-        this.dnb.dnd.$element.data('id'), x, y
+        this.dnb.dnd.$element.data('id'), x, y,
       );
     };
 
@@ -47,7 +47,7 @@ export default class DragNBarWrapper {
       this.callbacks.onMoved(
         $element.data('id'),
         Math.round(parseFloat($element.css('left'))),
-        Math.round(parseFloat($element.css('top')))
+        Math.round(parseFloat($element.css('top'))),
       );
     };
 
@@ -196,7 +196,7 @@ export default class DragNBarWrapper {
       this.params.globals.get('showConfirmationDialog')({
         headerText: H5PEditor.t('core', 'pasteError'),
         dialogText: H5PEditor.t('H5P.DragNBar', 'unableToPaste'),
-        confirmText: this.params.dictionary.get('l10n.ok')
+        confirmText: this.params.dictionary.get('l10n.ok'),
       });
 
       return; // Unsupported library
@@ -218,9 +218,9 @@ export default class DragNBarWrapper {
       $element = this.callbacks.createElement({
         contentType: pasted.generic,
         generic: 'contentType',
-        // eslint-disable-next-line no-magic-numbers
+         
         ...(pasted.width && { width: Math.min(pasted.width, 100) }),
-        // eslint-disable-next-line no-magic-numbers
+         
         ...(pasted.height && { height: Math.min(pasted.height * elementAreaRect.width / elementAreaRect.height, 100) }),
       });
     }
