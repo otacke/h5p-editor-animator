@@ -1,5 +1,4 @@
 import Dictionary from '@services/dictionary.js';
-import Globals from '@services/globals.js';
 import Util from '@services/util.js';
 import { parseAspectRatio } from '@services/util.js';
 import { determineValidSubContentOptions, getUberName } from '@services/h5p-util.js';
@@ -37,7 +36,7 @@ export default class Animator extends H5P.EventDispatcher {
     this.dictionary = new Dictionary();
     this.fillDictionary();
 
-    this.globals = new Globals();
+    this.globals = new Map();
     this.globals.set('mainInstance', this);
     this.globals.set('contentId', H5PEditor.contentId); // Will be undefined if new content
     this.globals.set('aspectRatio', parseAspectRatio(this.params.aspectRatio));
