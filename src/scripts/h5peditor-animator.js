@@ -66,13 +66,15 @@ export default class Animator extends H5P.EventDispatcher {
 
     this.buildMain();
 
-    document.addEventListener('mousedown', (event) => {
+    this.handleDocumentMouseDown = (event) => {
       this.main?.handleDocumentMouseDown(event);
-    });
+    };
+    document.addEventListener('mousedown', this.handleDocumentMouseDown);
 
-    window.addEventListener('resize', () => {
+    this.handleResize = () => {
       this.main?.resize();
-    });
+    };
+    window.addEventListener('resize', this.handleResize);
 
     this.parent.ready(() => {
       this.passReadies = false;
@@ -271,7 +273,26 @@ export default class Animator extends H5P.EventDispatcher {
    * Remove self. Invoked by H5P core.
    */
   remove() {
-    this.dom.remove();
+    document.removeEventListener('mousedown', this.handleDocumentMouseDown);
+    window.removeEventListener('resize', this.handleResize);
+
+    this.fieldInstance?.changes?.splice(0);
+    this.backgroundColorFieldInstance?.changes?.splice(0);
+    this.backgroundImageFieldInstance?.changes?.splice(0);
+    this.aspectRatioFieldInstance?.changes?.splice(0);
+
+    this.main?.destroy();
+    this.fieldInstance?.destroy?.();
+
+    this.fieldInstance = null;
+    this.backgroundColorFieldInstance = null;
+    this.backgroundImageFieldInstance = null;
+    this.audioFieldInstance = null;
+    this.aspectRatioFieldInstance = null;
+    this.hideControlsFieldInstance = null;
+    this.main = null;
+    this.changes = null;
+    this.dom = null;
   }
 
   /**
