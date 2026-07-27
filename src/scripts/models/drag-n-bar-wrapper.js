@@ -64,17 +64,19 @@ export default class DragNBarWrapper {
     });
 
     // Listen for H5P content being copied to clipboard
-    H5P.externalDispatcher.on('datainclipboard', (event) => {
+    this.handleClipboardEvent = (event) => {
       if (!this.params.subContentOptions.length || event.data?.reset) {
         return;
       }
 
       this.updatePasteButton();
-    });
+    };
+    H5P.externalDispatcher.on('datainclipboard', this.handleClipboardEvent);
 
-    this.dnb.on('paste', (event) => {
+    this.handlePasteEvent = (event) => {
       this.handlePaste(event.data);
-    });
+    };
+    this.dnb.on('paste', this.handlePasteEvent);
   }
 
   /**
@@ -186,6 +188,18 @@ export default class DragNBarWrapper {
   isSubContentSupported(uberName) {
     return !!this.params.subContentOptions.find((option) => option.uberName === uberName);
   };
+
+  /**
+   * Destroy self and underlying H5P.DragNBar.
+   */
+  destroy() {
+    H5P.externalDispatcher.off('datainclipboard', this.handleClipboardEvent);
+    this.dnb?.off('paste', this.handlePasteEvent);
+    this.dnb?.destroy();
+
+    this.dnb = null;
+    this.parentDOM = null;
+  }
 
   /**
    * Handle pasted from clipboard and create new element if possible.

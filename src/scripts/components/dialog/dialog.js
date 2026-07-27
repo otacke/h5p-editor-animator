@@ -163,6 +163,15 @@ export default class Dialog {
   }
 
   /**
+   * Destroy self.
+   */
+  destroy() {
+    this.focusTrap?.deactivate();
+    this.focusTrap = null;
+    this.dom = null;
+  }
+
+  /**
    * Validate form children.
    * @param {object} form Form to be validated.
    * @param {object} children Children to be validated.

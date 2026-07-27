@@ -117,4 +117,12 @@ export default class PreviewOverlay {
   decloak() {
     this.dom.classList.remove('display-invisible');
   }
+
+  /**
+   * Destroy self.
+   */
+  destroy() {
+    this.preview = null;
+    this.dom = null;
+  }
 }

@@ -174,4 +174,19 @@ export default class Main {
 
     this.callbacks.onChanged(values);
   }
+
+  /**
+   * Destroy self and all child components.
+   */
+  destroy() {
+    this.board?.destroy();
+    this.dialog?.destroy();
+    this.previewOverlay?.destroy();
+
+    this.board = null;
+    this.dialog = null;
+    this.previewOverlay = null;
+    this.previewInstance = null;
+    this.dom = null;
+  }
 }

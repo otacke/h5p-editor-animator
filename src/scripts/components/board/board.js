@@ -47,9 +47,10 @@ export default class Board {
 
     this.toggleSidebar(false);
 
-    window.addEventListener('keydown', (event) => {
+    this.handleKeyDownBound = (event) => {
       this.handleKeyDown(event);
-    });
+    };
+    window.addEventListener('keydown', this.handleKeyDownBound);
 
     window.requestAnimationFrame(() => {
       this.dnbWrapper.setContainerEm(parseFloat(window.getComputedStyle(this.elementArea.getDOM()).fontSize));
@@ -165,5 +166,26 @@ export default class Board {
     this.toolbar.hide();
     this.elementArea.hide();
     this.sidebar.hide();
+  }
+
+  /**
+   * Destroy self and all child components.
+   */
+  destroy() {
+    window.removeEventListener('keydown', this.handleKeyDownBound);
+    window.clearTimeout(this.pinWrapperTimeout);
+
+    this.dnbWrapper?.destroy();
+    this.elementArea?.destroy();
+    this.sidebar?.destroy();
+    this.toolbar?.destroy();
+
+    this.dnbWrapper = null;
+    this.elementArea = null;
+    this.sidebar = null;
+    this.toolbar = null;
+    this.elements = [];
+    this.animations = [];
+    this.dom = null;
   }
 }
