@@ -19,7 +19,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "he": "1.2.0"
+    "he": "2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^8.0.7",
